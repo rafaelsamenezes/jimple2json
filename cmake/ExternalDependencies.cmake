@@ -24,10 +24,8 @@ FetchContent_Declare(
   GIT_TAG        v1.9.1)
 
 FetchContent_MakeAvailable(spdlog)
-find_package(spdlog REQUIRED)
 
 # PROPERTY TEST rapidcheck
-
 FetchContent_Declare(
   rapidcheck
   GIT_REPOSITORY https://github.com/emil-e/rapidcheck.git)
