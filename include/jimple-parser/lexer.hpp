@@ -81,6 +81,7 @@ class Lexer {
         { "with", Token::WITH },
         { "cls", Token::CLS },
         { ",", Token::COMMA },
+        { "$", Token::DOLLAR },
         { "{", Token::L_BRACE },
         { "}", Token::R_BRACE },
         { "[", Token::L_BRACKET },
@@ -111,6 +112,8 @@ class Lexer {
 
     // Return the Last token seen
     Token get_next_token();
+    const char get_token_char() const { return LastChar; }
+    const std::string get_token_str() const { return TokenStr; }
     protected:
     std::istream &in; // input stream object
 
@@ -127,6 +130,7 @@ class Lexer {
 
     private:
     std::unordered_map<std::string, Token> TOKEN_MAP; // Optimization
+    std::string TokenStr;
     char LastChar = ' '; // This is the latest char seen
     std::optional<Token> check_binary_token(char initial, const std::unordered_map<char, Token> &secondary, Token unary);
     Token return_last_token();

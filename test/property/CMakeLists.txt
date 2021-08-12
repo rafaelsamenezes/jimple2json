@@ -1,5 +1,5 @@
 set(PROPERTY_TEST_LIB rapidcheck)
-# Adds a new Unit based test
+# Adds a new prp based test
 function (new_property_test TARGET SRC LIBS)
   add_executable(${TARGET} ${SRC})
   target_link_libraries(${TARGET} PRIVATE ${LIBS} ${PROPERTY_TEST_LIB})

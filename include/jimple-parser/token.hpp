@@ -4,7 +4,7 @@
 //===----------------------------------------------------------------------===//
 enum class Token {
   ERROR,
-  EOF,
+  EOF_,
   ABSTRACT,
   FINAL,
   NATIVE,
@@ -102,5 +102,7 @@ enum class Token {
   IDENTIFIER,
   AT_IDENTIFIER,
   BOOL_CONSTANT,
-  INTEGER_CONSTANT
+  INTEGER_CONSTANT,
+  STRING_CONSTANT,
+  DOLLAR // TODO
 };
