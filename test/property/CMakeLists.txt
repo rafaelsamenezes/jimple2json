@@ -9,4 +9,4 @@ endfunction()
 
 new_property_test("rapid" "rapidcheck.cpp" "")
 
-add_subdirectory(tokens)
+new_property_test("lexer_rapid" "lexer.cpp" "lexer")

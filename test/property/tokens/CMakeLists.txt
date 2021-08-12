@@ -1,1 +1,0 @@
-new_property_test("integer_token" "integer.cpp" "lexer")

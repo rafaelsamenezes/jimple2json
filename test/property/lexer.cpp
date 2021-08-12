@@ -13,11 +13,9 @@
  * hex_digit = dec_digit | ['a' .. 'f'] | ['A' .. 'F'];
  * oct_digit = ['0' .. '7'];
  */
-
-
-bool integer_token_prp()
+bool integer_constant_prp()
 {
-    rc::check("An integer should be parsed as a token",
+    return rc::check("An integer should be parsed as a token",
             [](const int &v) {
                 constexpr int N = 1000;
                 char buf[N] = {0};
@@ -54,7 +52,9 @@ bool integer_token_prp()
             });
 }
 
+
+
 int main() {
-  integer_token_prp();
+  integer_constant_prp();
   return 0;
 }

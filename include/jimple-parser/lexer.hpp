@@ -4,8 +4,18 @@
 #include <istream>
 #include <optional>
 
+/**
+ * @brief This is a Simple Lexer class to generate the token list
+ *
+ */
 class Lexer {
     public:
+
+    /**
+     * @brief Construct a new Lexer object
+     *
+     * @param in input stream containing the code
+     */
     explicit Lexer(std::istream &in) : in(in) {
         TOKEN_MAP = {
         { "boolean", Token::BOOLEAN },
@@ -98,14 +108,26 @@ class Lexer {
         // etc
     };
     }
+
+    // Return the Last token seen
     Token get_next_token();
     protected:
-    std::istream &in;
+    std::istream &in; // input stream object
 
-    bool is_not_crlf(const char c) { return true; }
+    /**
+     * @brief Checks if char is a breakline
+     *
+     * @param c char to be checked
+     * @return true
+     * @return false
+     */
+    bool is_not_crlf(const char c) {
+        return c != '\r' && c != '\n';
+    }
+
     private:
-    std::unordered_map<std::string, Token> TOKEN_MAP;
-    char LastChar = ' ';
+    std::unordered_map<std::string, Token> TOKEN_MAP; // Optimization
+    char LastChar = ' '; // This is the latest char seen
     std::optional<Token> check_binary_token(char initial, const std::unordered_map<char, Token> &secondary, Token unary);
     Token return_last_token();
 

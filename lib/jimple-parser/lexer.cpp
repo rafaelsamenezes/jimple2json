@@ -8,6 +8,8 @@ Token Lexer::get_next_token() {
     while(isspace(LastChar))
       LastChar = in.get();
 
+    if(LastChar == EOF) return Token::EOF;
+
     if (isalpha(LastChar)) { // [a-Z][0-Z | _]+
         std::string TokenStr;
         do {
@@ -22,7 +24,8 @@ Token Lexer::get_next_token() {
         return check_token->second;
     }
 
-    if (isdigit(LastChar)) // decimal | octal | hex
+    // (decimal | octal | hex)L? | decimal.decimal
+    if (isdigit(LastChar))
     {
         std::string TokenStr;
         TokenStr += LastChar;
