@@ -1,7 +1,7 @@
 #include <rapidcheck.h>
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 int main() {
   rc::check("double reversal yields the original value",

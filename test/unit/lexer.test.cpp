@@ -1,19 +1,17 @@
-#define CATCH_CONFIG_MAIN // This tells Catch to provide a main() - only do this in one cpp file
+#define CATCH_CONFIG_MAIN // This tells Catch to provide a main() - only do this
+                          // in one cpp file
 #include <catch2/catch.hpp>
 #include <jimple-parser/lexer.hpp>
 
-TEST_CASE("Basic_Lexing", "[core][lexer]")
-{
-  SECTION("Bool Constant")
-  {
+TEST_CASE("Basic_Lexing", "[core][lexer]") {
+  SECTION("Bool Constant") {
     std::string test("true false");
     std::istringstream in(test);
     Lexer l(in);
     CHECK(l.get_next_token() == Token::BOOL_CONSTANT);
     CHECK(l.get_next_token() == Token::BOOL_CONSTANT);
   }
-  SECTION("Integer Constant")
-  {
+  SECTION("Integer Constant") {
     std::string test("0 0x123abca 12456789 1234L 01234 879456123 0x123 0X1345");
     std::istringstream in(test);
     Lexer l(in);
@@ -26,8 +24,7 @@ TEST_CASE("Basic_Lexing", "[core][lexer]")
     CHECK(l.get_next_token() == Token::INTEGER_CONSTANT);
     CHECK(l.get_next_token() == Token::INTEGER_CONSTANT);
   }
-  SECTION("Complex Symbols Lexing")
-  {
+  SECTION("Complex Symbols Lexing") {
     std::string test(":= == != >= <= << >> >>>");
     std::istringstream in(test);
     Lexer l(in);
@@ -40,16 +37,18 @@ TEST_CASE("Basic_Lexing", "[core][lexer]")
     CHECK(l.get_next_token() == Token::SHR);
     CHECK(l.get_next_token() == Token::USHR);
   }
-  SECTION("Reserved Words Lexing")
-  {
-    std::string test("abstract final native public protected private "
-      "static synchronized transient volatile strictfp enum annotation "
-      "class interface void boolean byte short char int long float double "
-      "null_type unknown extends implements breakpoint case catch cmp cmpg "
-      "cmpl default entermonitor exitmonitor goto if instanceof interfaceinvoke "
-      "lengthof lookupswitch neg new newarray newmultiarray nop ret return "
-      "specialinvoke staticinvoke dynamicinvoke tableswitch throw throws virtualinvoke "
-      "null from to with cls");
+  SECTION("Reserved Words Lexing") {
+    std::string test(
+        "abstract final native public protected private "
+        "static synchronized transient volatile strictfp enum annotation "
+        "class interface void boolean byte short char int long float double "
+        "null_type unknown extends implements breakpoint case catch cmp cmpg "
+        "cmpl default entermonitor exitmonitor goto if instanceof "
+        "interfaceinvoke "
+        "lengthof lookupswitch neg new newarray newmultiarray nop ret return "
+        "specialinvoke staticinvoke dynamicinvoke tableswitch throw throws "
+        "virtualinvoke "
+        "null from to with cls");
     std::istringstream in(test);
     Lexer l(in);
     CHECK(l.get_next_token() == Token::ABSTRACT);
@@ -115,8 +114,7 @@ TEST_CASE("Basic_Lexing", "[core][lexer]")
     CHECK(l.get_next_token() == Token::WITH);
     CHECK(l.get_next_token() == Token::CLS);
   }
-  SECTION("Unary Symbol Tokens")
-  {
+  SECTION("Unary Symbol Tokens") {
     std::string test(",{};[]():.'=&|^%+-*/<>");
     std::istringstream in(test);
     Lexer l(in);
