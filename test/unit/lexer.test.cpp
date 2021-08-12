@@ -3,7 +3,7 @@
 #include <catch2/catch.hpp>
 #include <jimple-parser/lexer.hpp>
 
-TEST_CASE("Basic_Lexing", "[core][lexer]") {
+TEST_CASE("UNIT-Lexing", "[core][lexer]") {
   SECTION("Bool Constant") {
     std::string test("true false");
     std::istringstream in(test);

@@ -3,7 +3,7 @@
 #include <catch2/catch.hpp>
 #include <jimple-parser/parser.hpp>
 
-TEST_CASE("declaration_parsing", "[core][statement][declaration]") {
+TEST_CASE("UNIT-Parsing", "[core][statement][declaration]") {
   SECTION("Basic_Declaration") {
     std::string test("bool teste;");
     std::istringstream in(test);
