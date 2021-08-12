@@ -4,7 +4,7 @@
 
 TEST_CASE("declaration_parsing", "[core][statement][declaration]")
 {
-  SECTION("Basic Declaration")
+  SECTION("Basic_Declaration")
   {
     std::string test("bool teste;");
     std::istringstream in(test);

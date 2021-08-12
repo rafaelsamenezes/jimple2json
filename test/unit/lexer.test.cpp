@@ -2,7 +2,7 @@
 #include <catch2/catch.hpp>
 #include <jimple-parser/lexer.hpp>
 
-TEST_CASE("Basic Lexing", "[core][lexer]")
+TEST_CASE("Basic_Lexing", "[core][lexer]")
 {
   SECTION("Bool Constant")
   {
@@ -14,9 +14,10 @@ TEST_CASE("Basic Lexing", "[core][lexer]")
   }
   SECTION("Integer Constant")
   {
-    std::string test("0x123abca 12456789 1234L 01234 879456123 0x123 0X1345");
+    std::string test("0 0x123abca 12456789 1234L 01234 879456123 0x123 0X1345");
     std::istringstream in(test);
     Lexer l(in);
+    CHECK(l.get_next_token() == Token::INTEGER_CONSTANT);
     CHECK(l.get_next_token() == Token::INTEGER_CONSTANT);
     CHECK(l.get_next_token() == Token::INTEGER_CONSTANT);
     CHECK(l.get_next_token() == Token::INTEGER_CONSTANT);

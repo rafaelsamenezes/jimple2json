@@ -1,7 +1,7 @@
 # Module to add dependencies that do not belong
 # anywhere else
 
-# UNIT TEST with catch2
+# UNIT TEST catch2
 
 Include(FetchContent)
 
@@ -15,6 +15,9 @@ FetchContent_MakeAvailable(Catch2)
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/contrib)
 include(Catch)
 
+
+# LOGGING spdlog
+
 FetchContent_Declare(
   spdlog
   GIT_REPOSITORY  https://github.com/gabime/spdlog.git
@@ -22,3 +25,11 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(spdlog)
 find_package(spdlog REQUIRED)
+
+# PROPERTY TEST rapidcheck
+
+FetchContent_Declare(
+  rapidcheck
+  GIT_REPOSITORY https://github.com/emil-e/rapidcheck.git)
+
+FetchContent_MakeAvailable(rapidcheck)
