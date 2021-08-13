@@ -1,13 +1,8 @@
 {
-	"Token testcase": {
-		"prefix": ["test-token", "tt"],
-		"body": ["CHECK(l.get_next_token() == Token::$0);"],
-		"description": "Check next input token"
+	"Catch2 Section": {
+		"prefix": ["SECTION", "sc"],
+		"body": ["SECTION(\"$0\"){\n\tCHECK(1==1);\n}"],
+		"description": "Add a catch section"
 	  },
 
-	"Token map": {
-		"prefix": ["map-token", "rt"],
-		"body": ["{ \"$1\", Token::${1/(.*)/${1:/upcase}/} },"],
-		"description": "Add line to mt"
-	  }
 }

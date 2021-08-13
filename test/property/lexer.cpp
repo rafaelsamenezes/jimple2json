@@ -50,7 +50,67 @@ bool integer_constant_prp() {
   });
 }
 
+// at_identifier = '@' (('parameter' dec_digit+ ':') | 'this' ':' |
+bool at_identifier_prp() {
+  return rc::check("An at_identifier should be parsed as a token", [](const int n) {
+    std::ostringstream text;
+    constexpr int N = 1000;
+    char buf[N] = {0};
+
+    // Checking parameter
+    text << "@parameter";
+
+    // Parse as a decimal value
+    snprintf(buf, N, "%u", n);
+
+    // Add error string
+    text << buf << " ";
+
+    // Add Ok string
+    text << "@parameter";
+    text << buf << ":";
+
+    std::istringstream in(text.str());
+    Lexer L(in);
+    RC_ASSERT(L.get_next_token() == Token::ERROR);
+    RC_ASSERT(L.get_next_token() == Token::AT_IDENTIFIER);
+  });
+}
+
+
+// string_constant  = '"' string_char* '"';
+bool string_constant_prp() {
+  return rc::check("A string should be parsed as a token", [](const std::vector<char> &v) {
+    std::ostringstream Str;
+    for(char x : v)
+    {
+      RC_PRE(x != '"' && x != '\n' && x != '\r' && x != EOF);
+      Str << x;
+    }
+    std::ostringstream oss;
+    // Begins with a "
+    oss << "\"";
+    oss << Str.str();
+
+    std::string unbalanced(oss.str());
+
+    oss << "\"";
+    std::string balanced(oss.str());
+
+    std::istringstream in_error(unbalanced);;
+    Lexer l_error(in_error);
+    RC_ASSERT(l_error.get_next_token() == Token::ERROR);
+
+    std::istringstream in_ok(balanced);;
+    Lexer l_ok(in_ok);
+    RC_ASSERT(l_ok.get_next_token() == Token::STRING_CONSTANT);
+  });
+}
+
+
 int main() {
   integer_constant_prp();
+  string_constant_prp();
+  at_identifier_prp();
   return 0;
 }

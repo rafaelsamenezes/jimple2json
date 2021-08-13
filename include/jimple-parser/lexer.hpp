@@ -114,8 +114,6 @@ class Lexer {
     Token get_next_token();
     const char get_token_char() const { return LastChar; }
     const std::string get_token_str() const { return TokenStr; }
-    protected:
-    std::istream &in; // input stream object
 
     /**
      * @brief Checks if char is a breakline
@@ -124,9 +122,28 @@ class Lexer {
      * @return true
      * @return false
      */
-    bool is_not_crlf(const char c) {
+    static bool is_not_crlf(const char c) {
         return c != '\r' && c != '\n';
     }
+
+    static bool is_first_id_char(const char c) {
+        return isalpha(c) || c == '_' || c == '$';
+    }
+    static bool is_escape_char(const char c) {
+        return c == '\\' ||  c == '\''
+            || c == '\"' || !is_not_crlf(c)
+            || c == '\t';
+            //c ==  '\ ' || || c == '\.' || ;
+    }
+
+    static bool is_simple_id_char(const char c) {
+        return is_first_id_char(c) || isdigit(c) || c == '-';
+    }
+
+    protected:
+    std::istream &in; // input stream object
+
+
 
     private:
     std::unordered_map<std::string, Token> TOKEN_MAP; // Optimization
@@ -140,7 +157,7 @@ class Lexer {
         OCTAL,
         HEXADECIMAL
     };
-    bool is_number(char n, INTEGER_MODE m) {
+    bool is_number(char n, INTEGER_MODE m = INTEGER_MODE::DECIMAL) {
         switch (m)
         {
         case INTEGER_MODE::DECIMAL:
@@ -154,4 +171,9 @@ class Lexer {
         }
         return false; // unreachable
     }
+
+    std::optional<Token> check_string_constant();
+    std::optional<Token> check_at_identifier();
+    std::optional<Token> check_default_identifier();
+    std::optional<Token> check_identifier();
 };

@@ -4,6 +4,37 @@
 #include <jimple-parser/lexer.hpp>
 
 TEST_CASE("UNIT-Lexing", "[core][lexer]") {
+  SECTION("Identifier"){
+    std::string test("<init> <clinit> asdqwe $z0");
+    std::istringstream in(test);
+    Lexer l(in);
+    CHECK(l.get_next_token() == Token::CMPLT);
+    CHECK(l.get_next_token() == Token::IDENTIFIER);
+    CHECK(l.get_next_token() == Token::CMPGT);
+    CHECK(l.get_next_token() == Token::CMPLT);
+    CHECK(l.get_next_token() == Token::IDENTIFIER);
+    CHECK(l.get_next_token() == Token::CMPGT);
+    CHECK(l.get_next_token() == Token::IDENTIFIER);
+    CHECK(l.get_next_token() == Token::IDENTIFIER);
+  }
+  SECTION("At Identifier"){
+    std::string test("@this: @caughtexception @parameter: @parameter1:");
+    std::istringstream in(test);
+    Lexer l(in);
+    CHECK(l.get_next_token() == Token::AT_IDENTIFIER);
+    CHECK(l.get_next_token() == Token::AT_IDENTIFIER);
+    CHECK(l.get_next_token() == Token::AT_IDENTIFIER);
+    CHECK(l.get_next_token() == Token::AT_IDENTIFIER);
+  }
+  SECTION("String Constant") {
+    std::string test("\"\"\"qwert\"\"asdf\"\"unbalanced");
+    std::istringstream in(test);
+    Lexer l(in);
+    CHECK(l.get_next_token() == Token::STRING_CONSTANT);
+    CHECK(l.get_next_token() == Token::STRING_CONSTANT);
+    CHECK(l.get_next_token() == Token::STRING_CONSTANT);
+    CHECK(l.get_next_token() == Token::ERROR);
+  }
   SECTION("Bool Constant") {
     std::string test("true false");
     std::istringstream in(test);
@@ -140,5 +171,11 @@ TEST_CASE("UNIT-Lexing", "[core][lexer]") {
     CHECK(l.get_next_token() == Token::DIV);
     CHECK(l.get_next_token() == Token::CMPLT);
     CHECK(l.get_next_token() == Token::CMPGT);
+  }
+  SECTION("Is not CRLF") {
+    CHECK(Lexer::is_not_crlf('a'));
+    CHECK(Lexer::is_not_crlf('\xFF'));
+    CHECK(!Lexer::is_not_crlf('\n'));
+    CHECK(!Lexer::is_not_crlf('\r'));
   }
 }
