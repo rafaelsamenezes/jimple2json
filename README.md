@@ -1,9 +1,30 @@
-# jimple_parser
-A C++ jimple parser
+# jimple to JSON
 
-This is still a WIP.
+This is a Haskell application that parses multiple jimple files and converts
+them into JSON
 
-# Testing
+Ths is still a WIP in the Early Stages
+
+## Building
+
+Use [Haskell Stack](https://docs.haskellstack.org/en/stable/README/) tool for
+setup, or use cabal directly
+
+`stack setup`
+
+## Running
+
+Again, if you are using Stack it is just
+
+`stack exec jimple-exe <file.jimple>`
+
+## Testing
+
+To run the tests:
+
+`stack exec jimple-exe <file.jimple>`
+
+## Debugging
 
 You can create a jimple from a Java file by:
 
