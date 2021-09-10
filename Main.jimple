@@ -1,0 +1,36 @@
+public class Main extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        Main r0;
+
+        r0 := @this: Main;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void main(java.lang.String[]) throws java.lang.Exception
+    {
+        java.util.Random $r0;
+        int i0;
+        java.lang.String[] r2;
+
+        r2 := @parameter0: java.lang.String[];
+
+        $r0 = new java.util.Random;
+
+        specialinvoke $r0.<java.util.Random: void <init>()>();
+
+        i0 = virtualinvoke $r0.<java.util.Random: int nextInt(int)>(100);
+
+        if i0 <= 30 goto label1;
+
+        staticinvoke <java.lang.System: void exit(int)>(1);
+
+     label1:
+        return;
+    }
+}
