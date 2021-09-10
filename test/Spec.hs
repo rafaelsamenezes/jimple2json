@@ -57,9 +57,10 @@ parsedIncorrectly str mode = case res of
 correctTest name f testString = testCase name $ parsedCorrectly testString f
 incorrectTest name f testString = testCase (name ++ " (false)") $ parsedIncorrectly testString f
 
+unitTests :: TestTree
 unitTests = testGroup "Parsing tests"
   [
-    correctTest "Abstract test" P.jimpleModifierAbstract "abstract",
+    incorrectTest "Abstract test" P.jimpleModifierAbstract "abstract",
     incorrectTest "Abstract test" P.jimpleModifierAbstract "abstracta",
     correctTest "Basic identifier test" L.identifier "abstract",
     incorrectTest "Basic identifier test" L.identifier "91234",
