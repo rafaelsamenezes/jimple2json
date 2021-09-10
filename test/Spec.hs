@@ -60,7 +60,7 @@ incorrectTest name f testString = testCase (name ++ " (false)") $ parsedIncorrec
 unitTests :: TestTree
 unitTests = testGroup "Parsing tests"
   [
-    incorrectTest "Abstract test" P.jimpleModifierAbstract "abstract",
+    correctTest "Abstract test" P.jimpleModifierAbstract "abstract",
     incorrectTest "Abstract test" P.jimpleModifierAbstract "abstracta",
     correctTest "Basic identifier test" L.identifier "abstract",
     incorrectTest "Basic identifier test" L.identifier "91234",
