@@ -53,6 +53,10 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - jimple
+    - mtl
+    - haskeline
+    - aeson
+    - bytestring
     - tasty
     - tasty-smallcheck
     - tasty-hunit

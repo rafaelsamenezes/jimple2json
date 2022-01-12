@@ -6,13 +6,13 @@ cabal-version: 1.12
 
 name:           jimple
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/jimple#readme>
-homepage:       https://github.com/githubuser/jimple#readme
-bug-reports:    https://github.com/githubuser/jimple/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2021 Author name here
-license:        BSD3
+description:    Please see the README on GitHub at <https://github.com/rafaelsamenezes/jimple_parser#readme>
+homepage:       https://github.com/rafaelsamenezes/jimple_parser#readme
+bug-reports:    https://github.com/rafaelsamenezes/jimple_parser/issues
+author:         Rafael Sá Menezes
+maintainer:     rafael.sa.menezes@outlook.com
+copyright:      2021 Rafael Sá Menezes
+license:        MIT
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -21,7 +21,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/jimple
+  location: https://github.com/rafaelsamenezes/jimple_parser
 
 library
   exposed-modules:
@@ -65,8 +65,12 @@ test-suite jimple-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
+    , bytestring
+    , haskeline
     , jimple
+    , mtl
     , tasty
     , tasty-hunit
     , tasty-quickcheck

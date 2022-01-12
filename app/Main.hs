@@ -11,18 +11,18 @@ import Data.Aeson
 import qualified Data.ByteString.Lazy as B
 --import qualified Data.ByteString.Lazy.Char8 as BL
 
-process :: String -> IO ()
-process line = do
+process :: String -> String -> IO ()
+process line dest = do
     let res = parseTopLevel line
     case res of
       Left err -> print err
-      Right program -> B.writeFile "test.json" $ encode program
+      Right program -> B.writeFile dest $ encode program
       --Right program -> print $ encode program
 
 processArg :: FilePath -> IO ()
 processArg x = do
   content <- readFile x
-  process content
+  process content (x ++ ".ast")
 
 main :: IO()
 main = do
