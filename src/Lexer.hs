@@ -1,6 +1,16 @@
 module Lexer where
 
 import Text.Parsec
+    ( char,
+      string,
+      (<|>),
+      many,
+      try,
+      alphaNum,
+      digit,
+      letter,
+      many1,
+      sepBy )
 import Text.Parsec.String (Parser)
 import Text.Parsec.Language (emptyDef)
 import qualified Text.Parsec.Token as Tok

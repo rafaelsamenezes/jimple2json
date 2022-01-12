@@ -1,6 +1,16 @@
 module Parser where
 
 import Text.Parsec
+    ( ParseError,
+      char,
+      (<|>),
+      many,
+      parse,
+      try,
+      digit,
+      noneOf,
+      eof,
+      many1 )
 import Text.Parsec.String (Parser)
 
 import qualified Text.Parsec.Expr as Ex
@@ -8,6 +18,13 @@ import qualified Text.Parsec.Token as Tok
 
 
 import Lexer
+    ( lexer,
+      dotSep,
+      fullIdentifier,
+      identifier,
+      atIdentifier,
+      reserved,
+      reservedOp )
 import Ast
 import qualified Text.ParserCombinators.Parsec.Combinator as Tok
 
@@ -204,8 +221,7 @@ jimpleTypeNonVoidBaseFull = do
 
 jimpleTypeNonVoid :: Parser Type
 jimpleTypeNonVoid = do
-    base <- jimpleTypeNonVoidBaseFull
-    return $ NonvoidType base
+    NonvoidType <$> jimpleTypeNonVoidBaseFull
 
 jimpleType :: Parser Type
 jimpleType = try jimpleTypeVoid
@@ -222,8 +238,7 @@ jimpleClassMemberField = do
 
 jimpleParameter :: Parser ParameterList
 jimpleParameter = do
-    p <- Tok.parens lexer $ many $ noneOf [')']
-    return p
+    Tok.parens lexer $ many $ noneOf [')']
 
 jimpleMethodBodyEmpty :: Parser MethodBody
 jimpleMethodBodyEmpty = do
@@ -237,13 +252,11 @@ jimpleJimpleTypeUnknown = do
 
 jimpleJimpleTypeNonVoid :: Parser JimpleType
 jimpleJimpleTypeNonVoid = do
-    nonvoid <- jimpleTypeNonVoidBaseFull
-    return $ NonVoidType nonvoid
+    NonVoidType <$> jimpleTypeNonVoidBaseFull
 
 jimpleLocalName :: Parser LocalName
 jimpleLocalName = do
-    var <- identifier
-    return var
+    identifier
 
 
 jimpleJimpleType :: Parser JimpleType
@@ -297,10 +310,6 @@ extractSignature (JimpleMethodSignature y) = y
 
 toJimpleNamed = try (JimpleMethodSignature <$> jimpleMethodSignature)
              <|> try (JimpleNamedSignature <$> identifier)
-
-
---jimpleParseParameters :: Parser [Argument]
---jimpleParseParameters = []
 
 
 jimpleStatementVirtualInvoke :: Parser InvokeExpr
@@ -395,8 +404,7 @@ jimpleStatement = try jimpleStatementInvoke
 
 jimpleMethodFullBodyStmt :: Parser MethodBodyField
 jimpleMethodFullBodyStmt = do
-    stmt <- jimpleStatement
-    return $ Statement stmt
+    Statement <$> jimpleStatement
 
 jimpleMethodBodyField :: Parser MethodBodyField
 jimpleMethodBodyField = try jimpleMethodFullBodyStmt
@@ -410,8 +418,7 @@ jimpleParseFullBody = do
 
 jimpleMethodFullBody :: Parser MethodBody
 jimpleMethodFullBody = do
-    p <- Tok.braces lexer jimpleParseFullBody
-    return p
+    Tok.braces lexer jimpleParseFullBody
 
 jimpleMethodBody :: Parser MethodBody
 jimpleMethodBody = try jimpleMethodBodyEmpty
@@ -424,8 +431,7 @@ jimpleClassMemberMethod = do
     name <- identifier
     parameters <- jimpleParameter
     throws <- jimpleThrowsClause
-    body <- jimpleMethodBody
-    return $ ClassMethod modifier type_ name parameters throws body
+    ClassMethod modifier type_ name parameters throws <$> jimpleMethodBody
 
 
 jimpleExpression :: Parser Expression
@@ -435,8 +441,7 @@ jimpleExpression = try (New <$> jimpleNew)
 jimpleNew :: Parser New
 jimpleNew = do
     reserved "new"
-    type_ <- jimpleType
-    return $ Simple type_
+    Simple <$> jimpleType
 
 
 

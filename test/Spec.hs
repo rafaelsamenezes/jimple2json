@@ -2,23 +2,15 @@ import Test.Tasty
 import Test.Tasty.SmallCheck as SC
 import Test.Tasty.QuickCheck as QC
 import Test.Tasty.HUnit
-
-
-import Control.Monad.Trans
-import System.Console.Haskeline
-import System.Environment
-import System.IO
-
-import ToJson
-import Data.Aeson
 import qualified Data.ByteString.Lazy as B
+
+import qualified Utils as U
 
 import Data.List
 import Data.Ord
 
 import Parser as P
 import Lexer as L
-import Test.Tasty.HUnit (assertFailure, assertEqual)
 
 main = defaultMain tests
 
@@ -109,25 +101,18 @@ unitTests = testGroup "Parsing tests"
     correctTest "If Statement" P.jimpleStatementIfGoto "if a == 10 goto label1;"
     -- TODO: incorrectTest "Declaration test 3" P.jimpleDeclaration  "return;"
   ]
-fileContentsAreEqual a b = do
-  aContents <- readFile a  
+
+
+compareFiles a b = do
+  aContents <- readFile a
   bContents <- B.readFile b
-  let processed = (process aContents)
+  let processed = (U.process aContents)
   case processed of
     Nothing -> assertFailure "Couldn't parse Jimple File"
     Just x -> x @?= (bContents)
 
 
-process line = do
-    let res = parseTopLevel line
-    case res of
-      Left err -> Nothing
-      Right program -> Just $ encode program
-
-
-acceptanceToAssertion fileA fileB = fileContentsAreEqual fileA fileB
-
-acceptanceTestCase name fileA fileB = testCase name $ acceptanceToAssertion fileA fileB
+acceptanceTestCase name fileA fileB = testCase name $ compareFiles fileA fileB
 
 acceptanceTests :: TestTree
 acceptanceTests = testGroup "Acceptance Test"

@@ -4,6 +4,7 @@ module ToJson where
 
 import Ast
 import Data.Aeson
+    ( ToJSON(toJSON), Value(Null), object, KeyValue((.=)) )
 
 
 convertMaybe :: ToJSON a => Maybe a -> Value
