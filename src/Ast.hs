@@ -4,7 +4,7 @@ module Ast where
 -- TODO
 type Name = String
 type LocalName = String
-type ParameterList = String
+type ParameterList = [String]
 type CatchClause = String
 type AtIdentifier = String
 type Argument = String
@@ -26,6 +26,7 @@ data New = Simple Type
 
 data Expression = New New
                 | Cast Type Immediate
+                | FieldAccess ClassName Name Type
                 | InvokeExpr InvokeExpr
                 | BinOp Immediate Immediate BinOp
                 | Immediate Immediate
@@ -56,13 +57,35 @@ data Statement = Label Name
                | Goto Label
                deriving (Eq, Ord, Show)
 
+convertIdentity :: Statement -> Statement
+convertIdentity (Identity var at t) = Assignement var (Cast t $ Local ('@':at))
+convertIdentity x = x
+
 data MethodBodyField = Statement Statement
                      | Declaration JimpleType [LocalName]
+                     | DeclarationSingle JimpleType LocalName
                      deriving (Eq, Ord, Show)
 
+-- I was having some trouble converting
+-- a declaration into multiple json objects
+-- So, i created the DeclarationSingle
+
+convertDeclaration :: MethodBodyField -> [MethodBodyField]
+convertDeclaration (Declaration t []) = []
+convertDeclaration (Declaration t (x:xs)) = DeclarationSingle t x : convertDeclaration (Declaration t xs)
+convertDeclaration x = [x]
+
+adaptMethodFields :: [MethodBodyField] -> [MethodBodyField]
+adaptMethodFields = concatMap convertDeclaration
 
 data MethodSignature = MethodSignature ClassName Type Name [Argument]
                      deriving (Eq, Ord, Show)
+
+extractClassName :: MethodSignature -> ClassName
+extractClassName (MethodSignature a _ _ _) = a
+
+extractMethod :: MethodSignature -> Name
+extractMethod (MethodSignature _ _ a _) = a
 
 data InvokeExpr = VirtualInvoke Name MethodSignature [Argument]
                 | StaticInvoke Name MethodSignature [Argument]

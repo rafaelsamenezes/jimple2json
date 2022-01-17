@@ -1,8 +1,3 @@
 {
-	"Catch2 Section": {
-		"prefix": ["SECTION", "sc"],
-		"body": ["SECTION(\"$0\"){\n\tCHECK(1==1);\n}"],
-		"description": "Add a catch section"
-	  },
-
+	
 }

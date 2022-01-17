@@ -17,7 +17,7 @@ generateOutput line dest = do
 processArg :: FilePath -> IO ()
 processArg x = do
   content <- readFile x
-  generateOutput content (x ++ ".ast")
+  generateOutput content (x ++ ".json")
 
 main :: IO()
 main = do

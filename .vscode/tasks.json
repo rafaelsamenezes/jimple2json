@@ -10,6 +10,19 @@
             "args": [
                 "test"
             ]
+        },
+        {
+            "label": "Build Project",
+            "type": "shell",
+            "command": "stack",
+            "args": [
+                "build"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
