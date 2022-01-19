@@ -237,6 +237,9 @@ jimpleClassMemberField = do
 
 jimpleParameter :: Parser ParameterList
 jimpleParameter = do
+  Tok.parens lexer $ Tok.commaSep lexer jimpleType
+
+hackParameter = do
   Tok.parens lexer $ many $ noneOf [')']
   return []
 
@@ -331,10 +334,10 @@ jimpleStatementStaticInvoke = do
   reservedOp ":"
   castType <- jimpleType
   name <- identifier
-  functionParameters <- jimpleParameter
+  functionParameters <- hackParameter
   reservedOp ">"
-  parameters <- jimpleParameter
-  return $ StaticInvoke "" (MethodSignature baseclass castType name functionParameters) parameters
+  parameters <- hackParameter
+  return $ StaticInvoke "" (MethodSignature baseclass castType name []) []
 
 
 jimpleStatementReturn :: Parser Statement

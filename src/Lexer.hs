@@ -8,6 +8,7 @@ import Text.Parsec
     many,
     many1,
     sepBy,
+    sepBy1,
     string,
     try,
     (<|>),
@@ -98,6 +99,7 @@ lexer = Tok.makeTokenParser style
 symbol = Tok.symbol lexer
 
 dotSep p = p `sepBy` symbol "."
+dotSep1 p = p `sepBy1` symbol "."
 
 integer :: Parser Integer
 integer = Tok.integer lexer
@@ -116,7 +118,7 @@ firstIdChar =
   try letter
     <|> try (char '_' >> return '_')
     <|> try (char '$' >> return '$')
-    <|> try escapeChar
+    -- <|> try escapeChar
 
 escapeChar :: Parser Char
 escapeChar =
@@ -134,13 +136,11 @@ fullIdentifierBase = do
   rest <- many $ try simpleIdChar <|> try escapeChar
   return (var : rest)
 
-flat x = intercalate "." $ concat x
-
 fullIdentifier :: Parser String
 fullIdentifier = do
-  names <- dotSep $ many fullIdentifierBase
+  names <- dotSep1 fullIdentifierBase
   Tok.whiteSpace lexer
-  return $ flat names
+  return $ intercalate "." names
 
 identifierBase :: Parser String
 identifierBase = do

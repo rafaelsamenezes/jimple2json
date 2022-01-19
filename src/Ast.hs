@@ -4,7 +4,7 @@ module Ast where
 -- TODO
 type Name = String
 type LocalName = String
-type ParameterList = [String]
+type ParameterList = [Type]
 type CatchClause = String
 type AtIdentifier = String
 type Argument = String
