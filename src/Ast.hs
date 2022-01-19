@@ -54,6 +54,7 @@ data Statement = Label Name
                | Assignement Name Expression
                | IfGoto Expression Label
                | LabelDef Label
+               | Throw Immediate
                | Goto Label
                deriving (Eq, Ord, Show)
 
@@ -78,7 +79,7 @@ convertDeclaration x = [x]
 adaptMethodFields :: [MethodBodyField] -> [MethodBodyField]
 adaptMethodFields = concatMap convertDeclaration
 
-data MethodSignature = MethodSignature ClassName Type Name [Argument]
+data MethodSignature = MethodSignature ClassName Type Name ParameterList
                      deriving (Eq, Ord, Show)
 
 extractClassName :: MethodSignature -> ClassName
@@ -87,8 +88,12 @@ extractClassName (MethodSignature a _ _ _) = a
 extractMethod :: MethodSignature -> Name
 extractMethod (MethodSignature _ _ a _) = a
 
+extractMethodParameters :: MethodSignature -> ParameterList
+extractMethodParameters (MethodSignature _ _ _ a) = a
+
 data InvokeExpr = VirtualInvoke Name MethodSignature [Argument]
-                | StaticInvoke Name MethodSignature [Argument]
+                | StaticInvoke MethodSignature [Argument]
+                | SpecialInvoke Name MethodSignature [Argument]
                 | DynamicInvoke -- TODO
                 deriving (Eq, Ord, Show)
 

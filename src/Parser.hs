@@ -289,9 +289,9 @@ jimpleMethodSignatureBase = do
   reservedOp ":"
   type_ <- jimpleType
   method_name <- identifier
-  parameters <- Tok.parens lexer $ many $ noneOf ")"
+  parameters <- jimpleParameter
   char '>'
-  return $ MethodSignature name type_ method_name [parameters]
+  return $ MethodSignature name type_ method_name parameters
 
 jimpleMethodSignature :: Parser MethodSignature
 jimpleMethodSignature = do
@@ -323,21 +323,25 @@ jimpleStatementVirtualInvoke = do
 jimpleStatementSpecialInvoke :: Parser InvokeExpr
 jimpleStatementSpecialInvoke = do
   reserved "specialinvoke"
-  namedsignature <- dotSep toJimpleNamed
-  return $ StaticInvoke (extractName $ head namedsignature) (extractSignature $ last namedsignature) []
+  var <- identifier
+  char '.'
+  signature <- jimpleMethodSignatureBase
+  parameters <- hackParameter
+  return $ SpecialInvoke var signature []
 
 jimpleStatementStaticInvoke :: Parser InvokeExpr
 jimpleStatementStaticInvoke = do
   reserved "staticinvoke"
-  reservedOp "<"
-  baseclass <- jimpleClassName
-  reservedOp ":"
-  castType <- jimpleType
-  name <- identifier
-  functionParameters <- hackParameter
-  reservedOp ">"
+  signature <- jimpleMethodSignatureBase
   parameters <- hackParameter
-  return $ StaticInvoke "" (MethodSignature baseclass castType name []) []
+  return $ StaticInvoke signature []
+
+jimpleStatementThrow :: Parser Statement
+jimpleStatementThrow = do
+  reserved "throw"
+  what <- jimpleImmediate
+  reservedOp ";"
+  return $ Throw what
 
 
 jimpleStatementReturn :: Parser Statement
@@ -361,7 +365,7 @@ jimpleImmediateValue = do
   return $ Value value
 
 jimpleImmediate =
-  try (Local <$> identifier)
+  try (Local <$> jimpleLocalName)
     <|> try jimpleImmediateValue
 
 jimpleBinOp = try (reservedOp "==" >> return CmpEq)
@@ -383,7 +387,7 @@ jimpleStatementGoto = do
 
 jimpleStatementLabel :: Parser Statement
 jimpleStatementLabel = do
-  label <- many $ noneOf ":"
+  label <- identifier
   reservedOp ":"
   return $ Label label
 
@@ -411,6 +415,7 @@ jimpleStatementAssignment = do
 jimpleStatement :: Parser Statement
 jimpleStatement =
   try jimpleStatementInvoke
+    <|> try jimpleStatementThrow
     <|> try jimpleStatementIdentity
     <|> try jimpleStatementReturn
     <|> try jimpleStatementAssignment
@@ -424,8 +429,8 @@ jimpleMethodFullBodyStmt = do
 
 jimpleMethodBodyField :: Parser MethodBodyField
 jimpleMethodBodyField =
-  try jimpleDeclaration
-    <|> try jimpleMethodFullBodyStmt
+  try jimpleMethodFullBodyStmt 
+    <|> try jimpleDeclaration
 
 jimpleParseFullBody :: Parser MethodBody
 jimpleParseFullBody = do

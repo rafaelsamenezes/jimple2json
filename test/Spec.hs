@@ -103,7 +103,9 @@ unitTests =
       correctTest "Assignment Statement" P.jimpleStatementAssignment "$$i0 = virtualinvoke $r0.<java.util.Random: int nextInt(int)>(30);",
       correctTest "Bool Expression" P.jimpleBoolExpr "a == 10",
       correctTest "If Statement" P.jimpleStatementIfGoto "if a == 10 goto label1;",
-      correctTest "FieldAccess Statement" P.jimpleFieldAccessExpression "<kotlin._Assertions: boolean ENABLED>"
+      correctTest "FieldAccess Statement" P.jimpleFieldAccessExpression "<kotlin._Assertions: boolean ENABLED>",
+      correctTest "Special Invoke Statement" P.jimpleStatementSpecialInvoke "specialinvoke $r0.<java.lang.AssertionError: void <init>(java.lang.Object)>(\"Assertion failed\")",
+      correctTest "Throw Statement" P.jimpleStatementThrow "throw $r0;"
       -- TODO: incorrectTest "Declaration test 3" P.jimpleDeclaration  "return;"
     ]
 
@@ -123,5 +125,6 @@ acceptanceTests =
   testGroup
     "Acceptance Test"
     [
-      acceptanceTestCase "Acceptance Checker" "test/Main.jimple" "test/Main.jimple.expected"
+      acceptanceTestCase "Hello True" "test/hello-true.jimple" "test/hello-true.expected",
+      acceptanceTestCase "Hello False" "test/hello-false.jimple" "test/hello-false.expected"
     ]

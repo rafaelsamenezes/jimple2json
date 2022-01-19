@@ -1,0 +1,33 @@
+public final class MainKt extends java.lang.Object
+{
+
+    public static final void main()
+    {
+        java.lang.AssertionError $r0;
+        boolean $z0;
+
+        $z0 = <kotlin._Assertions: boolean ENABLED>;
+
+        if $z0 == 0 goto label1;
+
+        $r0 = new java.lang.AssertionError;
+
+        specialinvoke $r0.<java.lang.AssertionError: void <init>(java.lang.Object)>("Assertion failed");
+
+        throw $r0;
+
+     label1:
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+
+        r0 := @parameter0: java.lang.String[];
+
+        staticinvoke <MainKt: void main()>();
+
+        return;
+    }
+}

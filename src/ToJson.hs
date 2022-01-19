@@ -48,18 +48,20 @@ instance ToJSON New where
   toJSON (Multi t i) = toJSON t
 
 instance ToJSON Expression where
-  toJSON (New n) = object [("expr_type", "new"), "new" .= toJSON n]
+  toJSON (New n) = object [("expr_type", "new"), "type" .= toJSON n]
   toJSON (BinOp lhs rhs op) = object [("expr_type", "binop"), "lhs" .= lhs, "rhs" .= rhs, "operator" .= op]
   toJSON (Cast t i) = object [("expr_type", "cast"), "from" .= i, "to" .= t]
   toJSON (FieldAccess classname field t) = object [("expr_type", "field_access"), "from" .= classname, "field" .= field, "type" .= t]
   toJSON x = "expression"
 
 instance ToJSON InvokeExpr where
-  toJSON (StaticInvoke name method arguments) = object [("object", "StaticInvoke"), "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method]
+  toJSON (StaticInvoke method arguments) = object [("object", "StaticInvoke"), "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method]
+  toJSON (SpecialInvoke name method arguments) = object [("object", "SpecialInvoke"), "variable" .= name,  "base_class" .= extractClassName method, "parameter_type" .= extractMethodParameters method, "parameters" .= arguments, "method" .= extractMethod method]
   toJSON x = toJSON $ T.pack $ show x
 
 instance ToJSON Statement where
   toJSON (Label x) = object [("object", "Label"), "label_id" .= x, "content" .= ([] :: [Statement])]
+  toJSON (Throw x) = object [("object", "Throw"), "expr" .= x]
   toJSON (LabelDef l) = object [("object", "Label"), "label_id" .= l, "content" .= ([] :: [Statement])]
   toJSON Breakpoint = object [("stmt", "breakpoint")]
   toJSON (Identity n at t) = toJSON $ convertIdentity (Identity n at t)
