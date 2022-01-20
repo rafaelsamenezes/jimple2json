@@ -146,5 +146,6 @@ acceptanceTests =
     [
       acceptanceTestCase "Hello True" "test/hello-true.jimple" "test/hello-true.expected",
       acceptanceTestCase "Hello False" "test/hello-false.jimple" "test/hello-false.expected",
-      acceptanceTestCase "Array True" "test/array-true.jimple" "test/array-true.expected"
+      acceptanceTestCase "Array True" "test/array-true.jimple" "test/array-true.expected",
+      acceptanceTestCase "Array False" "test/array-false.jimple" "test/array-false.expected"
     ]
