@@ -2,9 +2,12 @@ import qualified Data.ByteString.Lazy as B
 import Data.List
 import Data.Ord
 import Lexer as L
-import Parser as P
+import Parser.Parser as P
+import Parser.Immediate as PI ( jimpleImmediate )
+import Parser.Modifier as PM ( jimpleModifier )
+import Parser.Expression as PE ( jimpleExpression, jimpleNewArrayExpression, jimpleFieldAccessExpression, jimpleDereferenceExpression )
 import Test.Tasty
-import Test.Tasty.HUnit
+import Test.Tasty.HUnit ( (@?=), testCase, assertFailure )
 import Test.Tasty.QuickCheck as QC
 import Test.Tasty.SmallCheck as SC
 import qualified Utils as U
@@ -34,8 +37,8 @@ unitTests :: TestTree
 unitTests =
   testGroup
     "Parsing tests"
-    [ correctTest "Abstract test" P.jimpleModifierAbstract "abstract",
-      incorrectTest "Abstract test" P.jimpleModifierAbstract "abstracta",
+    [ correctTest "Abstract test" PM.jimpleModifier "abstract",
+      incorrectTest "Abstract test" PM.jimpleModifier "abstracta",
       correctTest "Basic identifier test" L.identifier "abstract",
       correctTest "Basic identifier test 2" L.identifier "i6",
       incorrectTest "Basic identifier test" L.identifier "91234",
@@ -68,31 +71,31 @@ unitTests =
       correctTest "At identifier parameter" L.atIdentifier "@parameter3:",
       incorrectTest "At identifier parameter" L.atIdentifier "@parameter:",
       incorrectTest "At identifier parameter" L.atIdentifier "@parameter3",
-      correctTest "Invoke Statement" P.jimpleStatementSpecialInvoke "specialinvoke $r0.<java.util.Random: void <init>()>()",
+      -- correctTest "Invoke Statement" P.jimpleStatementSpecialInvoke "specialinvoke $r0.<java.util.Random: void <init>()>()",
       correctTest "Assignment Statement" P.jimpleStatementAssignment "$r0 = new java.util.Random;",
-      correctTest "Assignment Statement" P.jimpleStatementAssignment "$$i0 = virtualinvoke $r0.<java.util.Random: int nextInt(int)>(30);",
-      correctTest "Bool Expression" P.jimpleBoolExpr "a == 10",    
-      correctTest "Bool Expression 2" P.jimpleExpression "a - 10",     
-      correctTest "Bool Expression 3" P.jimpleExpression "20 == i6",  
-      correctTest "Bool Expression 4" P.jimpleExpression "20 == 10",
-      correctTest "Bool Expression 5" P.jimpleExpression "a - a",
-      correctTest "Bool Expression 6" P.jimpleExpression "10 + 50",
-      correctTest "Bool Expression 7" P.jimpleExpression "i5 >= 50",
-      correctTest "Newarray Expression" P.jimpleNewArrayExpression "newarray (int)[20]",
-      correctTest "Dereference Expression" P.jimpleDereferenceExpression "i2[10]",
-      correctTest "Dereference Expression 2" P.jimpleDereferenceExpression "r0[i4]",
-      correctTest "Dereference Expression 3" P.jimpleDereferenceExpression "r0[$i3]",
+      -- correctTest "Assignment Statement" P.jimpleStatementAssignment "$$i0 = virtualinvoke $r0.<java.util.Random: int nextInt(int)>(30);",
+      correctTest "Bool Expression" PE.jimpleExpression "a == 10",    
+      correctTest "Bool Expression 2" PE.jimpleExpression "a - 10",     
+      correctTest "Bool Expression 3" PE.jimpleExpression "20 == i6",  
+      correctTest "Bool Expression 4" PE.jimpleExpression "20 == 10",
+      correctTest "Bool Expression 5" PE.jimpleExpression "a - a",
+      correctTest "Bool Expression 6" PE.jimpleExpression "10 + 50",
+      correctTest "Bool Expression 7" PE.jimpleExpression "i5 >= 50",
+      correctTest "Newarray Expression" PE.jimpleNewArrayExpression "newarray (int)[20]",
+      correctTest "Dereference Expression" PE.jimpleDereferenceExpression "i2[10]",
+      correctTest "Dereference Expression 2" PE.jimpleDereferenceExpression "r0[i4]",
+      correctTest "Dereference Expression 3" PE.jimpleDereferenceExpression "r0[$i3]",
       correctTest "Dereference Assignment" P.jimpleStatementAssignmentDeref "i2[10] = 0;",
       correctTest "If Statement" P.jimpleStatementIfGoto "if a == 10 goto label1;",
       correctTest "If Statement 2" P.jimpleStatementIfGoto "if a != 10 goto label1;",
-      correctTest "FieldAccess Statement" P.jimpleFieldAccessExpression "<kotlin._Assertions: boolean ENABLED>",
-      correctTest "Special Invoke Statement" P.jimpleStatementSpecialInvoke "specialinvoke $r0.<java.lang.AssertionError: void <init>(java.lang.Object)>(\"Assertion failed\")",
+      correctTest "FieldAccess Statement" PE.jimpleFieldAccessExpression "<kotlin._Assertions: boolean ENABLED>",
+      -- correctTest "Special Invoke Statement" P.jimpleStatementSpecialInvoke "specialinvoke $r0.<java.lang.AssertionError: void <init>(java.lang.Object)>(\"Assertion failed\")",
       correctTest "Throw Statement" P.jimpleStatementThrow "throw $r0;",
-      correctTest "Immediate Number" P.jimpleImmediate "0",
-      correctTest "Immediate Number 2" P.jimpleImmediate "20",
-      correctTest "Immediate Variable" P.jimpleImmediate "i6",
-      correctTest "Immediate Variable 2" P.jimpleImmediate "$i3",
-      correctTest "Immediate String" P.jimpleImmediate "\"qwe asd qweew\"",
+      correctTest "Immediate Number" PI.jimpleImmediate "0",
+      correctTest "Immediate Number 2" PI.jimpleImmediate "20",
+      correctTest "Immediate Variable" PI.jimpleImmediate "i6",
+      correctTest "Immediate Variable 2" PI.jimpleImmediate "$i3",
+      correctTest "Immediate String" PI.jimpleImmediate "\"qwe asd qweew\"",
       correctTest "Assignment to Immediate" P.jimpleStatementAssignment "$z1 = 0;",
       correctTest "Assignment to Deref 2" P.jimpleStatementAssignment "$i4 = r0[$i3];",
       correctTest "Assignment to Expression" P.jimpleStatementAssignment "z1 = 20 - i6;",

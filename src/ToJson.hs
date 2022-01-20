@@ -109,10 +109,6 @@ instance ToJSON NonVoidType where
   toJSON (BaseType name size) = object ["identifier" .= name, "dimensions" .= size]
   toJSON (TypeIdentifier name size) = object ["identifier" .= name, "dimensions" .= size]
 
-instance ToJSON JimpleType where
-  toJSON Unknown = "Unknown"
-  toJSON (NonVoidType x) = toJSON x
-
 instance ToJSON Type where
   toJSON Void = object ["identifier" .= T.pack "void", "dimensions" .= (0 :: Int)]
   toJSON (NonvoidType x) = toJSON x

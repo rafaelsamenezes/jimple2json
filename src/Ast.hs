@@ -71,8 +71,8 @@ convertIdentity (Identity var at t) = Assignement var (Cast t $ Local ('@':at))
 convertIdentity x = x
 
 data MethodBodyField = Statement Statement
-                     | Declaration JimpleType [LocalName]
-                     | DeclarationSingle JimpleType LocalName
+                     | Declaration Type [LocalName]
+                     | DeclarationSingle Type LocalName
                      deriving (Eq, Ord, Show)
 
 -- I was having some trouble converting
@@ -126,11 +126,6 @@ data NonVoidType = BaseType BaseType Int
 data Type = Void
           | NonvoidType NonVoidType
           deriving (Eq, Ord, Show)
-
-data JimpleType = Unknown
-                | NonVoidType NonVoidType
-                deriving (Eq, Ord, Show)
-
 
 data MethodBody = EmptyMethod
                 | FullBody [MethodBodyField]

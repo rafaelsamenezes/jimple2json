@@ -27,7 +27,14 @@ library
   exposed-modules:
       Ast
       Lexer
-      Parser
+      Parser.ClassName
+      Parser.Expression
+      Parser.Immediate
+      Parser.Invoke
+      Parser.Modifier
+      Parser.Parser
+      Parser.Type
+      Parser.Utils
       ToJson
       Utils
   other-modules:

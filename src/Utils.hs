@@ -1,7 +1,7 @@
 module Utils where
 
 import ToJson ()
-import Parser ( parseTopLevel )
+import Parser.Parser ( parseTopLevel )
 import Data.Aeson ( encode )
 
 process line = do
