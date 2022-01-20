@@ -47,6 +47,9 @@ instance ToJSON New where
   toJSON (Simple t) = toJSON t
   toJSON (Multi t i) = toJSON t
 
+
+customJSON (StaticInvoke method arguments) = object [(("expr_type", "static_invoke")),  "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method]
+
 instance ToJSON Expression where
   toJSON (New n) = object [("expr_type", "new"), "type" .= toJSON n]
   toJSON (NewArray t i) = object [("expr_type", "newarray"), "type" .= toJSON t, "size" .= i]
@@ -55,6 +58,7 @@ instance ToJSON Expression where
   toJSON (FieldAccess classname field t) = object [("expr_type", "field_access"), "from" .= classname, "field" .= field, "type" .= t]
   toJSON (Immediate i) = toJSON i
   toJSON (Dereference base index) = object [("expr_type", "deref"), "base" .= toJSON base, "index" .= toJSON index ]
+  toJSON (InvokeExpr e) = customJSON e
   toJSON x = toJSON $ T.pack $ show x
 
 instance ToJSON InvokeExpr where
