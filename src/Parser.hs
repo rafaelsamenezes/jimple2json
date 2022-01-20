@@ -240,9 +240,9 @@ jimpleParameter :: Parser ParameterList
 jimpleParameter = do
   Tok.parens lexer $ Tok.commaSep lexer jimpleType
 
+hackParameter :: Parser [Immediate]
 hackParameter = do
-  Tok.parens lexer $ many $ noneOf [')']
-  return []
+  Tok.parens lexer $ Tok.commaSep lexer jimpleImmediate
 
 jimpleMethodBodyEmpty :: Parser MethodBody
 jimpleMethodBodyEmpty = do
@@ -335,7 +335,7 @@ jimpleStatementStaticInvoke = do
   reserved "staticinvoke"
   signature <- jimpleMethodSignatureBase
   parameters <- hackParameter
-  return $ StaticInvoke signature []
+  return $ StaticInvoke signature parameters
 
 jimpleStatementThrow :: Parser Statement
 jimpleStatementThrow = do
@@ -365,8 +365,15 @@ jimpleImmediateValue = do
   value <- many1 digit
   return $ Value value
 
+jimpleImmediateString = do
+  char '"'
+  value <- many $ noneOf ['"']
+  char '"'
+  return $ StringConst value
+
 jimpleImmediate =
   try jimpleImmediateValue
+    <|> try jimpleImmediateString
     <|> try (Local <$> identifier)
 
 jimpleBinOp = try (reservedOp "==" >> return CmpEq)

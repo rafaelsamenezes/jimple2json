@@ -121,6 +121,7 @@ unitTests =
       correctTest "Immediate Number" P.jimpleImmediate "0",
       correctTest "Immediate Number 2" P.jimpleImmediate "20",
       correctTest "Immediate Variable" P.jimpleImmediate "i6",
+      correctTest "Immediate String" P.jimpleImmediate "\"qwe asd qweew\"",
       correctTest "Assignment to Immediate" P.jimpleStatementAssignment "$z1 = 0;",
       correctTest "Assignment to Expression" P.jimpleStatementAssignment "z1 = 20 - i6;",
       correctTest "Assignment to Expression 2" P.jimpleStatement " $i2 = 20 - i4;",
@@ -148,5 +149,6 @@ acceptanceTests =
       acceptanceTestCase "Hello False" "test/hello-false.jimple" "test/hello-false.expected",
       acceptanceTestCase "Array True" "test/array-true.jimple" "test/array-true.expected",
       acceptanceTestCase "Array False" "test/array-false.jimple" "test/array-false.expected",
-      acceptanceTestCase "Func Call False" "test/func-call-false.jimple" "test/func-call-false.expected"
+      acceptanceTestCase "Func Call False" "test/func-call-false.jimple" "test/func-call-false.expected",
+      acceptanceTestCase "Func Call 2 False" "test/func-call-2-false.jimple" "test/func-call-2-false.expected"
     ]

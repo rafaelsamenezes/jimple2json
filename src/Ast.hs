@@ -12,6 +12,7 @@ type Label = String
 
 data Immediate = Local Name
                | Value String
+               | StringConst String
                deriving (Eq, Ord, Show)
 
 data ClassName = Quoted Name
@@ -98,9 +99,9 @@ extractMethod (MethodSignature _ _ a _) = a
 extractMethodParameters :: MethodSignature -> ParameterList
 extractMethodParameters (MethodSignature _ _ _ a) = a
 
-data InvokeExpr = VirtualInvoke Name MethodSignature [Argument]
-                | StaticInvoke MethodSignature [Argument]
-                | SpecialInvoke Name MethodSignature [Argument]
+data InvokeExpr = VirtualInvoke Name MethodSignature [Immediate]
+                | StaticInvoke MethodSignature [Immediate]
+                | SpecialInvoke Name MethodSignature [Immediate]
                 | DynamicInvoke -- TODO
                 deriving (Eq, Ord, Show)
 

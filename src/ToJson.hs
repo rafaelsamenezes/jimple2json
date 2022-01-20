@@ -38,6 +38,7 @@ classMethod modifiers type_ name parameters throws body =
 instance ToJSON Immediate where
   toJSON (Local x) = object ["expr_type" .= T.pack "symbol", "value" .= T.pack x]
   toJSON (Value x) = object ["expr_type" .= T.pack "constant", "value" .= T.pack x]
+  toJSON (StringConst x) = object ["expr_type" .= T.pack "string", "value" .= T.pack x]
 
 instance ToJSON ClassMember where
   toJSON (ClassField modifiers type_ name) = "FIELD"
