@@ -371,16 +371,22 @@ jimpleImmediateString = do
   char '"'
   return $ StringConst value
 
+
+jimpleImmediateLocal = do
+  var <- identifier
+  return $ Local var
+
 jimpleImmediate =
   try jimpleImmediateValue
     <|> try jimpleImmediateString
-    <|> try (Local <$> identifier)
+    <|> try jimpleImmediateLocal
 
 jimpleBinOp = try (reservedOp "==" >> return CmpEq)
   <|> try (reservedOp "!=" >> return CmpNe)
   <|> try (reservedOp ">=" >> return CmpGEq)
   <|> try (reservedOp "-" >> return Minus)
   <|> try (reservedOp "+" >> return Add)
+  <|> try (reservedOp ">" >> return CmpG)
 
 jimpleBoolExpr :: Parser Expression
 jimpleBoolExpr = do
@@ -505,9 +511,7 @@ jimpleBinaryExpression = do
 jimpleDereferenceExpression :: Parser Expression
 jimpleDereferenceExpression = do
   base <-  identifier
-  reservedOp "["
-  index <- jimpleImmediate
-  reservedOp "]"
+  index <- Tok.brackets lexer jimpleImmediate
   return $ Dereference (Local base) index
 
 jimpleNewArrayExpression :: Parser Expression

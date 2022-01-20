@@ -12,39 +12,7 @@ import qualified Utils as U
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "Tests" [properties, unitTests, acceptanceTests]
-
--- TODO: Add property tests
-properties :: TestTree
-properties = testGroup "Properties" []
-
---properties = testGroup "Properties" [scProps, qcProps]
-
-scProps =
-  testGroup
-    "(checked by SmallCheck)"
-    [ SC.testProperty "sort == sort . reverse" $
-        \list -> sort (list :: [Int]) == sort (reverse list),
-      SC.testProperty "Fermat's little theorem" $
-        \x -> ((x :: Integer) ^ 7 - x) `mod` 7 == 0,
-      -- the following property does not hold
-      SC.testProperty "Fermat's last theorem" $
-        \x y z n ->
-          (n :: Integer) >= 3 SC.==> x ^ n + y ^ n /= (z ^ n :: Integer)
-    ]
-
-qcProps =
-  testGroup
-    "(checked by QuickCheck)"
-    [ QC.testProperty "sort == sort . reverse" $
-        \list -> sort (list :: [Int]) == sort (reverse list),
-      QC.testProperty "Fermat's little theorem" $
-        \x -> ((x :: Integer) ^ 7 - x) `mod` 7 == 0,
-      -- the following property does not hold
-      QC.testProperty "Fermat's last theorem" $
-        \x y z n ->
-          (n :: Integer) >= 3 QC.==> x ^ n + y ^ n /= (z ^ n :: Integer)
-    ]
+tests = testGroup "Tests" [unitTests, acceptanceTests]
 
 parsedCorrectly str mode = case res of
   Left err -> assertFailure $ "Unable to parse string: " ++ str
@@ -72,6 +40,7 @@ unitTests =
       correctTest "Basic identifier test 2" L.identifier "i6",
       incorrectTest "Basic identifier test" L.identifier "91234",
       correctTest "Basic identifier test" L.identifier "\\tes\\t",
+      correctTest "Basic identifier test 2 " L.identifier "$ri3",
       correctTest "Basic identifier test <init>" L.identifier "<init>",
       correctTest "Basic identifier test <clinit>" L.identifier "<clinit>",
       incorrectTest "Basic identifier test <asd> (Fail)" L.identifier "<asd>",
@@ -112,6 +81,7 @@ unitTests =
       correctTest "Newarray Expression" P.jimpleNewArrayExpression "newarray (int)[20]",
       correctTest "Dereference Expression" P.jimpleDereferenceExpression "i2[10]",
       correctTest "Dereference Expression 2" P.jimpleDereferenceExpression "r0[i4]",
+      correctTest "Dereference Expression 3" P.jimpleDereferenceExpression "r0[$i3]",
       correctTest "Dereference Assignment" P.jimpleStatementAssignmentDeref "i2[10] = 0;",
       correctTest "If Statement" P.jimpleStatementIfGoto "if a == 10 goto label1;",
       correctTest "If Statement 2" P.jimpleStatementIfGoto "if a != 10 goto label1;",
@@ -121,8 +91,10 @@ unitTests =
       correctTest "Immediate Number" P.jimpleImmediate "0",
       correctTest "Immediate Number 2" P.jimpleImmediate "20",
       correctTest "Immediate Variable" P.jimpleImmediate "i6",
+      correctTest "Immediate Variable 2" P.jimpleImmediate "$i3",
       correctTest "Immediate String" P.jimpleImmediate "\"qwe asd qweew\"",
       correctTest "Assignment to Immediate" P.jimpleStatementAssignment "$z1 = 0;",
+      correctTest "Assignment to Deref 2" P.jimpleStatementAssignment "$i4 = r0[$i3];",
       correctTest "Assignment to Expression" P.jimpleStatementAssignment "z1 = 20 - i6;",
       correctTest "Assignment to Expression 2" P.jimpleStatement " $i2 = 20 - i4;",
       correctTest "Assignment to Deref" P.jimpleStatementAssignment " $i2 = r0[i4];"
@@ -150,5 +122,6 @@ acceptanceTests =
       acceptanceTestCase "Array True" "test/array-true.jimple" "test/array-true.expected",
       acceptanceTestCase "Array False" "test/array-false.jimple" "test/array-false.expected",
       acceptanceTestCase "Func Call False" "test/func-call-false.jimple" "test/func-call-false.expected",
-      acceptanceTestCase "Func Call 2 False" "test/func-call-2-false.jimple" "test/func-call-2-false.expected"
+      acceptanceTestCase "Func Call 2 False" "test/func-call-2-false.jimple" "test/func-call-2-false.expected",
+      acceptanceTestCase "Func Call 2 False" "test/sort-true.jimple" "test/sort-true.expected"
     ]

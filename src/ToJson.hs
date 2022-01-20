@@ -38,7 +38,7 @@ classMethod modifiers type_ name parameters throws body =
 instance ToJSON Immediate where
   toJSON (Local x) = object ["expr_type" .= T.pack "symbol", "value" .= T.pack x]
   toJSON (Value x) = object ["expr_type" .= T.pack "constant", "value" .= T.pack x]
-  toJSON (StringConst x) = object ["expr_type" .= T.pack "string", "value" .= T.pack x]
+  toJSON (StringConst x) = object ["expr_type" .= T.pack "string_constant", "value" .= T.pack x]
 
 instance ToJSON ClassMember where
   toJSON (ClassField modifiers type_ name) = "FIELD"
@@ -98,6 +98,7 @@ instance ToJSON BinOp where
   toJSON Add = toJSON $ T.pack "+"
   toJSON Minus = toJSON $ T.pack "-"
   toJSON CmpGEq = toJSON $ T.pack ">="
+  toJSON CmpG = toJSON $ T.pack ">"
   toJSON x = toJSON $ show x
 
 instance ToJSON BaseType where
