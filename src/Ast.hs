@@ -19,16 +19,19 @@ data ClassName = Quoted Name
                | FullIdentifier Name
                deriving (Eq, Ord, Show)
 
+-- TODO: Remove this
 data New = Simple Type
          | Multi Type Int -- TODO
          deriving (Eq, Ord, Show)
 
 
 data Expression = New New
+                | NewArray Type Immediate
                 | Cast Type Immediate
                 | FieldAccess ClassName Name Type
                 | InvokeExpr InvokeExpr
                 | BinOp Immediate Immediate BinOp
+                | Dereference Immediate Immediate
                 | Immediate Immediate
                 deriving (Eq, Ord, Show)
 
@@ -38,9 +41,12 @@ data BinOp = And
            | Mod
            | Cmp
            | CmpG
+           | CmpGEq
            | CmpL
            | CmpEq
            | CmpNe
+           | Minus
+           | Add
            deriving (Eq, Ord, Show)
 
 type BoolExpression = String
@@ -52,6 +58,7 @@ data Statement = Label Name
                | Invoke InvokeExpr
                | Return (Maybe Immediate)
                | Assignement Name Expression
+               | AssignementDeref Name Expression Immediate
                | IfGoto Expression Label
                | LabelDef Label
                | Throw Immediate

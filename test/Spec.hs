@@ -69,6 +69,7 @@ unitTests =
     [ correctTest "Abstract test" P.jimpleModifierAbstract "abstract",
       incorrectTest "Abstract test" P.jimpleModifierAbstract "abstracta",
       correctTest "Basic identifier test" L.identifier "abstract",
+      correctTest "Basic identifier test 2" L.identifier "i6",
       incorrectTest "Basic identifier test" L.identifier "91234",
       correctTest "Basic identifier test" L.identifier "\\tes\\t",
       correctTest "Basic identifier test <init>" L.identifier "<init>",
@@ -101,11 +102,29 @@ unitTests =
       correctTest "Invoke Statement" P.jimpleStatementSpecialInvoke "specialinvoke $r0.<java.util.Random: void <init>()>()",
       correctTest "Assignment Statement" P.jimpleStatementAssignment "$r0 = new java.util.Random;",
       correctTest "Assignment Statement" P.jimpleStatementAssignment "$$i0 = virtualinvoke $r0.<java.util.Random: int nextInt(int)>(30);",
-      correctTest "Bool Expression" P.jimpleBoolExpr "a == 10",
+      correctTest "Bool Expression" P.jimpleBoolExpr "a == 10",    
+      correctTest "Bool Expression 2" P.jimpleExpression "a - 10",     
+      correctTest "Bool Expression 3" P.jimpleExpression "20 == i6",  
+      correctTest "Bool Expression 4" P.jimpleExpression "20 == 10",
+      correctTest "Bool Expression 5" P.jimpleExpression "a - a",
+      correctTest "Bool Expression 6" P.jimpleExpression "10 + 50",
+      correctTest "Bool Expression 7" P.jimpleExpression "i5 >= 50",
+      correctTest "Newarray Expression" P.jimpleNewArrayExpression "newarray (int)[20]",
+      correctTest "Dereference Expression" P.jimpleDereferenceExpression "i2[10]",
+      correctTest "Dereference Expression 2" P.jimpleDereferenceExpression "r0[i4]",
+      correctTest "Dereference Assignment" P.jimpleStatementAssignmentDeref "i2[10] = 0;",
       correctTest "If Statement" P.jimpleStatementIfGoto "if a == 10 goto label1;",
+      correctTest "If Statement 2" P.jimpleStatementIfGoto "if a != 10 goto label1;",
       correctTest "FieldAccess Statement" P.jimpleFieldAccessExpression "<kotlin._Assertions: boolean ENABLED>",
       correctTest "Special Invoke Statement" P.jimpleStatementSpecialInvoke "specialinvoke $r0.<java.lang.AssertionError: void <init>(java.lang.Object)>(\"Assertion failed\")",
-      correctTest "Throw Statement" P.jimpleStatementThrow "throw $r0;"
+      correctTest "Throw Statement" P.jimpleStatementThrow "throw $r0;",
+      correctTest "Immediate Number" P.jimpleImmediate "0",
+      correctTest "Immediate Number 2" P.jimpleImmediate "20",
+      correctTest "Immediate Variable" P.jimpleImmediate "i6",
+      correctTest "Assignment to Immediate" P.jimpleStatementAssignment "$z1 = 0;",
+      correctTest "Assignment to Expression" P.jimpleStatementAssignment "z1 = 20 - i6;",
+      correctTest "Assignment to Expression 2" P.jimpleStatement " $i2 = 20 - i4;",
+      correctTest "Assignment to Deref" P.jimpleStatementAssignment " $i2 = r0[i4];"
       -- TODO: incorrectTest "Declaration test 3" P.jimpleDeclaration  "return;"
     ]
 
@@ -126,5 +145,6 @@ acceptanceTests =
     "Acceptance Test"
     [
       acceptanceTestCase "Hello True" "test/hello-true.jimple" "test/hello-true.expected",
-      acceptanceTestCase "Hello False" "test/hello-false.jimple" "test/hello-false.expected"
+      acceptanceTestCase "Hello False" "test/hello-false.jimple" "test/hello-false.expected",
+      acceptanceTestCase "Array True" "test/array-true.jimple" "test/array-true.expected"
     ]

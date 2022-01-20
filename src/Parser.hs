@@ -7,6 +7,7 @@ import Lexer
     fullIdentifier,
     identifier,
     lexer,
+    integer,
     reserved,
     reservedOp,
   )
@@ -365,15 +366,21 @@ jimpleImmediateValue = do
   return $ Value value
 
 jimpleImmediate =
-  try (Local <$> jimpleLocalName)
-    <|> try jimpleImmediateValue
+  try jimpleImmediateValue
+    <|> try (Local <$> identifier)
 
 jimpleBinOp = try (reservedOp "==" >> return CmpEq)
+  <|> try (reservedOp "!=" >> return CmpNe)
+  <|> try (reservedOp ">=" >> return CmpGEq)
+  <|> try (reservedOp "-" >> return Minus)
+  <|> try (reservedOp "+" >> return Add)
 
 jimpleBoolExpr :: Parser Expression
 jimpleBoolExpr = do
   lhs <- jimpleImmediate
+  Tok.whiteSpace lexer
   op <- jimpleBinOp
+  Tok.whiteSpace lexer
   rhs <- jimpleImmediate
   Tok.whiteSpace lexer
   return $ BinOp lhs rhs op
@@ -411,6 +418,17 @@ jimpleStatementAssignment = do
   reservedOp ";"
   return $ Assignement var expression
 
+jimpleStatementAssignmentDeref :: Parser Statement
+jimpleStatementAssignmentDeref = do
+  base <-  identifier -- TODO: Check for identifier
+  reservedOp "["
+  index <- jimpleImmediate
+  reservedOp "]"
+  reservedOp "="
+  expression <- jimpleExpression
+  reservedOp ";"
+  return $ AssignementDeref base expression index
+
 --class HelloWorld extends java.lang.Object {void <init>() { if $z0 != 0 goto label1; }  }
 jimpleStatement :: Parser Statement
 jimpleStatement =
@@ -422,6 +440,7 @@ jimpleStatement =
     <|> try jimpleStatementIfGoto
     <|> try jimpleStatementGoto
     <|> try jimpleStatementLabel
+    <|> try jimpleStatementAssignmentDeref
 
 jimpleMethodFullBodyStmt :: Parser MethodBodyField
 jimpleMethodFullBodyStmt = do
@@ -466,11 +485,40 @@ jimpleFieldAccessExpression = do
   reservedOp ">"
   return $ FieldAccess baseclass name castType
 
+jimpleBinaryExpression :: Parser Expression
+jimpleBinaryExpression = do
+  lhs <- jimpleImmediate
+  Tok.whiteSpace lexer
+  op <- jimpleBinOp
+  Tok.whiteSpace lexer
+  rhs <- jimpleImmediate
+  Tok.whiteSpace lexer
+  return $ BinOp lhs rhs op
+
+jimpleDereferenceExpression :: Parser Expression
+jimpleDereferenceExpression = do
+  base <-  identifier
+  reservedOp "["
+  index <- jimpleImmediate
+  reservedOp "]"
+  return $ Dereference (Local base) index
+
+jimpleNewArrayExpression :: Parser Expression
+jimpleNewArrayExpression = do
+  reserved "newarray"
+  base <-  Tok.parens lexer $ jimpleType
+  size <- Tok.brackets lexer $ jimpleImmediate
+  return $ NewArray base size
+
 jimpleExpression :: Parser Expression
 jimpleExpression =
   try jimpleFieldAccessExpression
+    <|> try jimpleDereferenceExpression
+    <|> try jimpleNewArrayExpression
     <|> try (New <$> jimpleNew)
     <|> try (InvokeExpr <$> jimpleInvokeExpr)
+    <|> try jimpleBinaryExpression
+    <|> try (Immediate <$> jimpleImmediate)
 
 jimpleNew :: Parser New
 jimpleNew = do

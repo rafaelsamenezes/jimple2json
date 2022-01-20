@@ -49,10 +49,13 @@ instance ToJSON New where
 
 instance ToJSON Expression where
   toJSON (New n) = object [("expr_type", "new"), "type" .= toJSON n]
+  toJSON (NewArray t i) = object [("expr_type", "newarray"), "type" .= toJSON t, "size" .= i]
   toJSON (BinOp lhs rhs op) = object [("expr_type", "binop"), "lhs" .= lhs, "rhs" .= rhs, "operator" .= op]
   toJSON (Cast t i) = object [("expr_type", "cast"), "from" .= i, "to" .= t]
   toJSON (FieldAccess classname field t) = object [("expr_type", "field_access"), "from" .= classname, "field" .= field, "type" .= t]
-  toJSON x = "expression"
+  toJSON (Immediate i) = toJSON i
+  toJSON (Dereference base index) = object [("expr_type", "deref"), "base" .= toJSON base, "index" .= toJSON index ]
+  toJSON x = toJSON $ T.pack $ show x
 
 instance ToJSON InvokeExpr where
   toJSON (StaticInvoke method arguments) = object [("object", "StaticInvoke"), "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method]
@@ -66,10 +69,12 @@ instance ToJSON Statement where
   toJSON Breakpoint = object [("stmt", "breakpoint")]
   toJSON (Identity n at t) = toJSON $ convertIdentity (Identity n at t)
   toJSON (Return x) = object $ ("object", "Return") : maybeToPair x "value"
-  toJSON (Goto l) = object [("stmt", "goto"), "goto" .= l]
+  toJSON (Goto l) = object [("object", "Goto"), "goto" .= l]
   toJSON (Assignement x y) = object [("object", "SetVariable"), "name" .= x, "value" .= y]
+  toJSON (AssignementDeref name value index) = object [("object", "SetVariableDeref"), "name" .= name, "value" .=  toJSON value, "pos" .= index]
   toJSON (IfGoto e l) = object [("object", "If"), "expression" .= e, "goto" .= l]
   toJSON (Invoke x) = toJSON x
+  toJSON x =  toJSON $ T.pack $ show x
 
 generateDeclaration t x = object [("object", "Variable"), "type" .= t, "name" .= x]
 
@@ -84,6 +89,10 @@ instance ToJSON MethodBody where
 
 instance ToJSON BinOp where
   toJSON CmpEq = toJSON $ T.pack "=="
+  toJSON CmpNe = toJSON $ T.pack "notequal"
+  toJSON Add = toJSON $ T.pack "+"
+  toJSON Minus = toJSON $ T.pack "-"
+  toJSON CmpGEq = toJSON $ T.pack ">="
   toJSON x = toJSON $ show x
 
 instance ToJSON BaseType where

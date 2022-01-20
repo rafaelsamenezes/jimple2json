@@ -23,7 +23,7 @@ import Data.List (intercalate, intersperse)
 lexer :: Tok.TokenParser ()
 lexer = Tok.makeTokenParser style
   where
-    ops = ["+", "*", "<=", "==", "=", ";", ":", "'", ":=", "."]
+    ops = ["+", "-", "*", "<=", "==", "=", ";", ":", "'", ":=", ".", "[", "]"]
     names =
       [ "abstract",
         "final",
