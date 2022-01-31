@@ -50,6 +50,7 @@ instance ToJSON New where
 
 
 customJSON (StaticInvoke method arguments) = object [(("expr_type", "static_invoke")),  "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method]
+customJSON (VirtualInvoke qwe method arguments) = object [(("expr_type", "virtual_invoke")),  "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method]
 
 instance ToJSON Expression where
   toJSON (New n) = object [("expr_type", "new"), "type" .= toJSON n]
@@ -60,11 +61,11 @@ instance ToJSON Expression where
   toJSON (Immediate i) = toJSON i
   toJSON (Dereference base index) = object [("expr_type", "deref"), "base" .= toJSON base, "index" .= toJSON index ]
   toJSON (InvokeExpr e) = customJSON e
-  toJSON x = toJSON $ T.pack $ show x
 
 instance ToJSON InvokeExpr where
   toJSON (StaticInvoke method arguments) = object [("object", "StaticInvoke"), "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method]
   toJSON (SpecialInvoke name method arguments) = object [("object", "SpecialInvoke"), "variable" .= name,  "base_class" .= extractClassName method, "parameter_type" .= extractMethodParameters method, "parameters" .= arguments, "method" .= extractMethod method]
+  toJSON (VirtualInvoke name method arguments) = object [("object", "VirtualInvoke"), "variable" .= name,  "base_class" .= extractClassName method, "parameter_type" .= extractMethodParameters method, "parameters" .= arguments, "method" .= extractMethod method]
   toJSON x = toJSON $ T.pack $ show x
 
 instance ToJSON Statement where
@@ -79,7 +80,6 @@ instance ToJSON Statement where
   toJSON (AssignementDeref name value index) = object [("object", "SetVariableDeref"), "name" .= name, "value" .=  toJSON value, "pos" .= index]
   toJSON (IfGoto e l) = object [("object", "If"), "expression" .= e, "goto" .= l]
   toJSON (Invoke x) = toJSON x
-  toJSON x =  toJSON $ T.pack $ show x
 
 generateDeclaration t x = object [("object", "Variable"), "type" .= t, "name" .= x]
 
