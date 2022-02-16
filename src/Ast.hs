@@ -20,6 +20,22 @@ data ClassName = Quoted Name
                | FullIdentifier Name
                deriving (Eq, Ord, Show)
 
+data FieldSignature = FieldSignature ClassName Type Name 
+                    deriving (Eq, Ord, Show)
+
+data FieldReference = LocalFieldReference Name FieldSignature
+                    | FieldSignatureRef FieldSignature
+                    deriving (Eq, Ord, Show)
+
+data Reference = ArrayRef Name Immediate -- Index of array, e.g. foo[2], Name: foo, Imeediate: 2
+              | FieldRef FieldReference  -- A full access, e.g. foo.bar()
+              deriving (Eq, Ord, Show)
+
+data Variable = LocalName Name
+              | Reference Reference
+            deriving (Eq, Ord, Show)
+
+
 -- TODO: Remove this
 data New = Simple Type
          | Multi Type Int -- TODO
@@ -29,10 +45,9 @@ data New = Simple Type
 data Expression = New New
                 | NewArray Type Immediate
                 | Cast Type Immediate
-                | FieldAccess ClassName Name Type
+                | ReferenceExpr Reference
                 | InvokeExpr InvokeExpr
                 | BinOp Immediate Immediate BinOp
-                | Dereference Immediate Immediate
                 | Immediate Immediate
                 deriving (Eq, Ord, Show)
 
@@ -53,13 +68,13 @@ data BinOp = And
 type BoolExpression = String
 
 
+
 data Statement = Label Name
                | Breakpoint
                | Identity LocalName AtIdentifier Type
                | Invoke InvokeExpr
                | Return (Maybe Immediate)
-               | Assignement Name Expression
-               | AssignementDeref Name Expression Immediate
+               | Assignement Variable Expression
                | IfGoto Expression Label
                | LabelDef Label
                | Throw Immediate
@@ -67,7 +82,7 @@ data Statement = Label Name
                deriving (Eq, Ord, Show)
 
 convertIdentity :: Statement -> Statement
-convertIdentity (Identity var at t) = Assignement var (Cast t $ Local ('@':at))
+convertIdentity (Identity var at t) = Assignement (LocalName var) (Cast t $ Local ('@':at))
 convertIdentity x = x
 
 data MethodBodyField = Statement Statement

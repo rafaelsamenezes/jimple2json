@@ -140,22 +140,11 @@ jimpleStatementInvoke = do
 
 jimpleStatementAssignment :: Parser Statement
 jimpleStatementAssignment = do
-  var <- identifier
+  var <- jimpleVariable 
   reservedOp "="
   expression <- jimpleExpression
   reservedOp ";"
   return $ Assignement var expression
-
-jimpleStatementAssignmentDeref :: Parser Statement
-jimpleStatementAssignmentDeref = do
-  base <-  identifier -- TODO: Check for identifier
-  reservedOp "["
-  index <- jimpleImmediate
-  reservedOp "]"
-  reservedOp "="
-  expression <- jimpleExpression
-  reservedOp ";"
-  return $ AssignementDeref base expression index
 
 --class HelloWorld extends java.lang.Object {void <init>() { if $z0 != 0 goto label1; }  }
 jimpleStatement :: Parser Statement
@@ -168,7 +157,7 @@ jimpleStatement =
     <|> try jimpleStatementIfGoto
     <|> try jimpleStatementGoto
     <|> try jimpleStatementLabel
-    <|> try jimpleStatementAssignmentDeref
+    -- <|> try jimpleStatementAssignmentDeref
 
 jimpleMethodFullBodyStmt :: Parser MethodBodyField
 jimpleMethodFullBodyStmt = do

@@ -1,4 +1,4 @@
-module Parser.Expression (jimpleExpression, jimpleFieldAccessExpression, jimpleNewArrayExpression, jimpleBoolExpr, jimpleDereferenceExpression) where
+module Parser.Expression (jimpleExpression, jimpleReferenceExpr, jimpleNewArrayExpression, jimpleBoolExpr) where
 
 import Ast
     ( New(Simple),
@@ -32,20 +32,17 @@ import Text.Parsec.String (Parser)
 import qualified Text.Parsec.Token as Tok
 import qualified Text.ParserCombinators.Parsec.Combinator as Tok
 import Parser.Type (jimpleType)
-import Parser.ClassName ( jimpleClassName ) 
+import Parser.ClassName ( jimpleClassName )
 import Parser.Immediate ( jimpleImmediate )
 import Parser.Invoke (jimpleInvokeExpr )
+import Parser.Utils
 
 -- <kotlin._Assertions: boolean ENABLED>
-jimpleFieldAccessExpression :: Parser Expression
-jimpleFieldAccessExpression = do
-  reservedOp "<"
-  baseclass <- jimpleClassName
-  reservedOp ":"
-  castType <- jimpleType
-  name <- identifier
-  reservedOp ">"
-  return $ FieldAccess baseclass name castType
+jimpleReferenceExpr :: Parser Expression
+jimpleReferenceExpr = do
+  ReferenceExpr <$> jimpleReference
+
+
 
 jimpleBinOp = try (reservedOp "==" >> return CmpEq)
   <|> try (reservedOp "!=" >> return CmpNe)
@@ -76,12 +73,6 @@ jimpleBoolExpr = do
   Tok.whiteSpace lexer
   return $ BinOp lhs rhs op
 
-jimpleDereferenceExpression :: Parser Expression
-jimpleDereferenceExpression = do
-  base <-  identifier
-  index <- Tok.brackets lexer jimpleImmediate
-  return $ Dereference (Local base) index
-
 jimpleNewArrayExpression :: Parser Expression
 jimpleNewArrayExpression = do
   reserved "newarray"
@@ -98,8 +89,9 @@ jimpleNew = do
 
 jimpleExpression :: Parser Expression
 jimpleExpression =
-  try jimpleFieldAccessExpression
-    <|> try jimpleDereferenceExpression
+  try jimpleReferenceExpr
+  --  <|> try jimpleVirtualFieldAccessExpression
+  --  <|> try jimpleDereferenceExpression
     <|> try jimpleNewArrayExpression
     <|> try (New <$> jimpleNew)
     <|> try (InvokeExpr <$> jimpleInvokeExpr)
