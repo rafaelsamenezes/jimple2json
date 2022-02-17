@@ -11,6 +11,7 @@ instance ToJSON Immediate where
   toJSON (Local x) = object ["expr_type" .= T.pack "symbol", "value" .= T.pack x]
   toJSON (Value x) = object ["expr_type" .= T.pack "constant", "value" .= T.pack x]
   toJSON (StringConst x) = object ["expr_type" .= T.pack "string_constant", "value" .= T.pack x]
+  toJSON (Clzz x) = object ["expr_type" .= T.pack "class_reference", "value" .= T.pack x]
 
 instance ToJSON ClassName where
   toJSON (Quoted x) = toJSON x
@@ -38,6 +39,8 @@ instance ToJSON Expression where
   toJSON (Cast t i) = object [("expr_type", "cast"), "from" .= i, "to" .= t]
   toJSON (ReferenceExpr ref) = toJSON ref
   toJSON (InvokeExpr e) = customJSON e
+  toJSON (UnOp i LengthOf) = object [("expr_type", "lengthof"), "expression" .= i ]
+  toJSON (UnOp i Neg) = object [("expr_type", "neg"), "expression" .= i ]
   toJSON (BinOp lhs rhs op) = object [("expr_type", "binop"), "lhs" .= lhs, "rhs" .= rhs, "operator" .= op]
   toJSON (Immediate i) = toJSON i
 
@@ -48,6 +51,7 @@ instance ToJSON BinOp where
   toJSON Minus = toJSON $ T.pack "-"
   toJSON CmpGEq = toJSON $ T.pack ">="
   toJSON CmpG = toJSON $ T.pack ">"
+  toJSON CmpLEq = toJSON $ T.pack "<="
   toJSON x = toJSON $ show x
 
 instance ToJSON Statement where
@@ -123,7 +127,7 @@ instance ToJSON New where
   toJSON (Multi t i) = toJSON t
 
 customJSON (StaticInvoke method arguments) = object [(("expr_type", "static_invoke")), "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method]
-customJSON (SpecialInvoke qwe method arguments) = object [(("expr_type", "special_invoke")), "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method]
+customJSON (SpecialInvoke name method arguments) = object [(("expr_type", "special_invoke")), "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method, "name" .= name]
 customJSON (VirtualInvoke name method arguments) = object [(("expr_type", "virtual_invoke")), "base_class" .= extractClassName method, "parameters" .= arguments, "method" .= extractMethod method, "name" .= name]
 
 generateDeclaration t x = object [("object", "Variable"), "type" .= t, "name" .= x]

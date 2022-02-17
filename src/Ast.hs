@@ -13,6 +13,7 @@ type Label = String
 data Immediate = Local Name
                | Value String
                | StringConst String
+               | Clzz String -- class reference
                deriving (Eq, Ord, Show)
 
 data ClassName = Quoted Name
@@ -48,6 +49,7 @@ data Expression = New New
                 | ReferenceExpr Reference
                 | InvokeExpr InvokeExpr
                 | BinOp Immediate Immediate BinOp
+                | UnOp Immediate UnOp
                 | Immediate Immediate
                 deriving (Eq, Ord, Show)
 
@@ -59,10 +61,15 @@ data BinOp = And
            | CmpG
            | CmpGEq
            | CmpL
+           | CmpLEq
            | CmpEq
            | CmpNe
            | Minus
            | Add
+           deriving (Eq, Ord, Show)
+
+data UnOp = LengthOf
+          | Neg
            deriving (Eq, Ord, Show)
 
 type BoolExpression = String

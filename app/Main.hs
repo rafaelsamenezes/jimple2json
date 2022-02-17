@@ -11,8 +11,8 @@ generateOutput :: String -> String -> IO ()
 generateOutput line dest = do
     let res = U.process line
     case res of
-      Nothing -> print "Couldn't parse Jimple File"
-      Just x -> B.writeFile dest x
+      Left err -> print err
+      Right x -> B.writeFile dest x
 
 processArg :: FilePath -> IO ()
 processArg x = do

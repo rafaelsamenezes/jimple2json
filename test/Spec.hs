@@ -83,6 +83,8 @@ unitTests =
       correctTest "Bool Expression 6" PE.jimpleExpression "10 + 50",
       correctTest "Bool Expression 7" PE.jimpleExpression "i5 >= 50",
       correctTest "Newarray Expression" PE.jimpleNewArrayExpression "newarray (int)[20]",
+      correctTest "Cast Expression" PE.jimpleCast "(int) 1",
+      correctTest "Cast Expression" PE.jimpleCast "(int) -1",
       correctTest "Dereference Expression" PE.jimpleReferenceExpr "i2[10]",
       correctTest "Dereference Expression 2" PE.jimpleReferenceExpr "r0[i4]",
       correctTest "Dereference Expression 3" PE.jimpleReferenceExpr "r0[$i3]",

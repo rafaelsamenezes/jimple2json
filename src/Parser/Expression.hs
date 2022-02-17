@@ -1,10 +1,10 @@
-module Parser.Expression (jimpleExpression, jimpleReferenceExpr, jimpleNewArrayExpression, jimpleBoolExpr) where
+module Parser.Expression (jimpleExpression, jimpleReferenceExpr, jimpleNewArrayExpression, jimpleBoolExpr, jimpleCast) where
 
 import Ast
     ( New(Simple),
       BinOp(..),
       Expression(..),
-      Immediate(Local) )
+      Immediate(Local), UnOp (LengthOf) )
 import Lexer
   ( atIdentifier,
     dotSep,
@@ -50,6 +50,8 @@ jimpleBinOp = try (reservedOp "==" >> return CmpEq)
   <|> try (reservedOp "-" >> return Minus)
   <|> try (reservedOp "+" >> return Add)
   <|> try (reservedOp ">" >> return CmpG)
+  <|> try (reservedOp "<" >> return CmpL)
+  <|> try (reservedOp "<=" >> return CmpLEq)
 
 
 jimpleBinaryExpression :: Parser Expression
@@ -80,20 +82,31 @@ jimpleNewArrayExpression = do
   size <- Tok.brackets lexer $ jimpleImmediate
   return $ NewArray base size
 
-
+jimpleCast :: Parser Expression
+jimpleCast = do
+  base <-  Tok.parens lexer $ jimpleType
+  Cast base <$> jimpleImmediate
 
 jimpleNew :: Parser New
 jimpleNew = do
   reserved "new"
   Simple <$> jimpleType
 
+jimpleLengthExpression :: Parser Expression
+jimpleLengthExpression = do
+  reserved "lengthof"
+  Tok.whiteSpace lexer
+  rhs <- jimpleImmediate
+  Tok.whiteSpace lexer
+  return $ UnOp rhs LengthOf
+
 jimpleExpression :: Parser Expression
 jimpleExpression =
   try jimpleReferenceExpr
-  --  <|> try jimpleVirtualFieldAccessExpression
-  --  <|> try jimpleDereferenceExpression
     <|> try jimpleNewArrayExpression
+    <|> try jimpleCast
     <|> try (New <$> jimpleNew)
     <|> try (InvokeExpr <$> jimpleInvokeExpr)
+    <|> try jimpleLengthExpression
     <|> try jimpleBinaryExpression
     <|> try (Immediate <$> jimpleImmediate)
