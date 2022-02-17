@@ -52,6 +52,7 @@ instance ToJSON BinOp where
   toJSON CmpGEq = toJSON $ T.pack ">="
   toJSON CmpG = toJSON $ T.pack ">"
   toJSON CmpLEq = toJSON $ T.pack "<="
+  toJSON CmpL = toJSON $ T.pack "<"
   toJSON x = toJSON $ show x
 
 instance ToJSON Statement where
