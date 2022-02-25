@@ -66,6 +66,8 @@ data BinOp = And
            | CmpNe
            | Minus
            | Add
+           | Times
+           | Division
            deriving (Eq, Ord, Show)
 
 data UnOp = LengthOf
