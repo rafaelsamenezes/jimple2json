@@ -51,9 +51,10 @@ jimpleBinOp = try (reservedOp "==" >> return CmpEq)
   <|> try (reservedOp "+" >> return Add)
   <|> try (reservedOp "*" >> return Times)
   <|> try (reservedOp "/" >> return Division)
-  <|> try (reservedOp ">" >> return CmpG)
-  <|> try (reservedOp "<" >> return CmpL)
   <|> try (reservedOp "<=" >> return CmpLEq)
+  <|> try (reservedOp "cmpg" >> return CmpG)
+  <|> try (reservedOp "cmpl" >> return CmpL)
+  <|> try (reservedOp "cmp" >> return Cmp)
 
 
 jimpleBinaryExpression :: Parser Expression
