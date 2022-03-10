@@ -53,6 +53,7 @@ instance ToJSON BinOp where
   toJSON Division = toJSON $ T.pack "/"
   toJSON CmpGEq = toJSON $ T.pack ">="
   toJSON CmpLEq = toJSON $ T.pack "<="
+  toJSON Mod = toJSON $ T.pack "%"
   toJSON CmpG = toJSON $ T.pack "cmpg"
   toJSON CmpL = toJSON $ T.pack "cmpl"
   toJSON Cmp = toJSON $ T.pack "cmp"
