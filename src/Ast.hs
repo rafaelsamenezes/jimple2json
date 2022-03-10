@@ -59,6 +59,8 @@ data BinOp = And
            | Mod
            | Cmp
            | CmpG
+           | CmpGt
+           | CmpLt
            | CmpGEq
            | CmpL
            | CmpLEq
