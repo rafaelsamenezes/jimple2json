@@ -1,6 +1,6 @@
-name:                jimple
-version:             0.1.0.0
-github:              "rafaelsamenezes/jimple_parser"
+name:                jimple2json
+version:             0.0.1
+github:              "rafaelsamenezes/jimple2json"
 license:             MIT
 author:              "Rafael Sá Menezes"
 maintainer:          "rafael.sa.menezes@outlook.com"
