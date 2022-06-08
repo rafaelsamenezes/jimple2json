@@ -38,11 +38,11 @@ jobs:
       run: stack build
       
     - name: Package Jimple2Json
-        shell: bash
-        run: |
-          mkdir package
-          dir=$(stack path --dist-dir)/build/jimple-exe
-          cp $dir/jimple-exe package/jimple2json
+      shell: bash
+      run: |
+        mkdir package
+        dir=$(stack path --dist-dir)/build/jimple-exe
+        cp $dir/jimple-exe package/jimple2json
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
