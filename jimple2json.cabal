@@ -4,11 +4,11 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 
-name:           jimple
-version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/rafaelsamenezes/jimple_parser#readme>
-homepage:       https://github.com/rafaelsamenezes/jimple_parser#readme
-bug-reports:    https://github.com/rafaelsamenezes/jimple_parser/issues
+name:           jimple2json
+version:        0.0.1
+description:    Please see the README on GitHub at <https://github.com/rafaelsamenezes/jimple2json#readme>
+homepage:       https://github.com/rafaelsamenezes/jimple2json#readme
+bug-reports:    https://github.com/rafaelsamenezes/jimple2json/issues
 author:         Rafael Sá Menezes
 maintainer:     rafael.sa.menezes@outlook.com
 copyright:      2021 Rafael Sá Menezes
@@ -21,7 +21,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/rafaelsamenezes/jimple_parser
+  location: https://github.com/rafaelsamenezes/jimple2json
 
 library
   exposed-modules:
@@ -38,7 +38,7 @@ library
       ToJson
       Utils
   other-modules:
-      Paths_jimple
+      Paths_jimple2json
   hs-source-dirs:
       src
   build-depends:
@@ -51,7 +51,7 @@ library
 executable jimple-exe
   main-is: Main.hs
   other-modules:
-      Paths_jimple
+      Paths_jimple2json
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
@@ -65,7 +65,7 @@ test-suite jimple-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Paths_jimple
+      Paths_jimple2json
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
