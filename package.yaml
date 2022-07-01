@@ -38,7 +38,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - jimple
+    - jimple2json
     - bytestring
 
 tests:
@@ -50,7 +50,7 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - jimple
+    - jimple2json
     - bytestring
     - tasty
     - tasty-smallcheck
