@@ -21,7 +21,7 @@ data ClassName = Quoted Name
                | FullIdentifier Name
                deriving (Eq, Ord, Show)
 
-data FieldSignature = FieldSignature ClassName Type Name 
+data FieldSignature = FieldSignature ClassName Type Name
                     deriving (Eq, Ord, Show)
 
 data FieldReference = LocalFieldReference Name FieldSignature
@@ -58,6 +58,7 @@ data BinOp = And
            | Xor
            | Mod
            | Cmp
+           | Greater
            | CmpG
            | CmpGEq
            | CmpL

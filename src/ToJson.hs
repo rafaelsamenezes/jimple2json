@@ -50,6 +50,7 @@ instance ToJSON BinOp where
   toJSON Add = toJSON $ T.pack "+"
   toJSON Minus = toJSON $ T.pack "-"
   toJSON Times = toJSON $ T.pack "*"
+  toJSON Greater = toJSON $ T.pack ">"
   toJSON Division = toJSON $ T.pack "/"
   toJSON CmpGEq = toJSON $ T.pack ">="
   toJSON CmpLEq = toJSON $ T.pack "<="
