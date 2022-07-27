@@ -28,6 +28,11 @@ import Text.Parsec
     noneOf,
     parse,
     try,
+    string,
+    manyTill,
+    anyChar,
+    anyToken,
+    digit,
     (<|>),
   )
 import qualified Text.Parsec.Expr as Ex
@@ -60,6 +65,17 @@ jimpleThrowsClause :: Parser ExtendsClause
 jimpleThrowsClause =
   try jimpleJustThrowsClause
     <|> return Nothing
+
+jimpleComment :: Parser String
+jimpleComment = do
+  string "/*"
+  contents <- manyTill anyChar (try (string "*/"))
+  Tok.whiteSpace lexer
+  return $ contents
+
+jimpleClassComment :: Parser [String]
+jimpleClassComment = try $ many jimpleComment
+
 
 
 jimpleClassMemberField :: Parser ClassMember
@@ -115,7 +131,15 @@ jimpleStatementIfGoto = do
   reservedOp ";"
   return $ IfGoto cond label
 
-
+jimpleStatementLocation :: Parser Statement
+jimpleStatementLocation = do
+  string "/*"
+  Tok.whiteSpace lexer
+  value <- many1 digit
+  Tok.whiteSpace lexer
+  string "*/"
+  Tok.whiteSpace lexer
+  return $ Location value
 
 
 jimpleStatementGoto :: Parser Statement
@@ -140,7 +164,7 @@ jimpleStatementInvoke = do
 
 jimpleStatementAssignment :: Parser Statement
 jimpleStatementAssignment = do
-  var <- jimpleVariable 
+  var <- jimpleVariable
   reservedOp "="
   expression <- jimpleExpression
   reservedOp ";"
@@ -157,6 +181,7 @@ jimpleStatement =
     <|> try jimpleStatementIfGoto
     <|> try jimpleStatementGoto
     <|> try jimpleStatementLabel
+    <|> try jimpleStatementLocation
     -- <|> try jimpleStatementAssignmentDeref
 
 jimpleMethodFullBodyStmt :: Parser MethodBodyField
@@ -165,7 +190,7 @@ jimpleMethodFullBodyStmt = do
 
 jimpleMethodBodyField :: Parser MethodBodyField
 jimpleMethodBodyField =
-  try jimpleMethodFullBodyStmt 
+  try jimpleMethodFullBodyStmt
     <|> try jimpleDeclaration
 
 jimpleParseFullBody :: Parser MethodBody
@@ -184,15 +209,13 @@ jimpleMethodBody =
 
 jimpleClassMemberMethod :: Parser ClassMember
 jimpleClassMemberMethod = do
+  comment <- jimpleClassComment
   modifier <- many jimpleModifier
   type_ <- jimpleType
   name <- identifier
   parameters <- jimpleParameter
   throws <- jimpleThrowsClause
-  ClassMethod modifier type_ name parameters throws <$> jimpleMethodBody
-
-
-
+  ClassMethod modifier type_ name parameters throws comment <$> jimpleMethodBody
 
 jimpleClassMember :: Parser ClassMember
 jimpleClassMember =

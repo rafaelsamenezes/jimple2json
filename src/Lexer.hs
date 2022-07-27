@@ -23,7 +23,7 @@ import Data.List (intercalate, intersperse)
 lexer :: Tok.TokenParser ()
 lexer = Tok.makeTokenParser style
   where
-    ops = ["+", "-", "*", "<=", "==", ">=", ">", "=", ";", ":", "'", ":=", ".", "[", "]"]
+    ops = ["+", "-", "*", "<=", "==", ">=", ">", "=", ";", ":", "'", ":=", ".", "[", "]", "/*", "*/"]
     names =
       [ "abstract",
         "final",
@@ -90,8 +90,6 @@ lexer = Tok.makeTokenParser style
     style =
       emptyDef
         { Tok.commentLine = "//",
-          Tok.commentStart = "/*",
-          Tok.commentEnd = "*/",
           Tok.reservedOpNames = ops,
           Tok.reservedNames = names
         }

@@ -89,6 +89,7 @@ data Statement = Label Name
                | LabelDef Label
                | Throw Immediate
                | Goto Label
+               | Location Name
                deriving (Eq, Ord, Show)
 
 convertIdentity :: Statement -> Statement
@@ -157,7 +158,7 @@ data MethodBody = EmptyMethod
                 deriving (Eq, Ord, Show)
 
 data ClassMember = ClassField [Modifier] Type Name
-                 | ClassMethod [Modifier] Type Name ParameterList ThrowsClause MethodBody
+                 | ClassMethod [Modifier] Type Name ParameterList ThrowsClause [String]  MethodBody
                  deriving (Eq, Ord, Show)
 
 type FileBody = [ClassMember]

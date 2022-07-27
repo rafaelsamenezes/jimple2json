@@ -70,6 +70,7 @@ instance ToJSON Statement where
   toJSON (Assignement x y) = object [("object", "SetVariable"), "lhs" .= x, "rhs" .= y]
   toJSON (IfGoto e l) = object [("object", "If"), "expression" .= e, "goto" .= l]
   toJSON (Invoke x) = toJSON x
+  toJSON (Location l) = object [("object", "Location"), "line" .= l]
 
 instance ToJSON MethodBodyField where
   toJSON (Statement x) = toJSON x
@@ -125,7 +126,7 @@ classField modifiers type_ name =
 
 instance ToJSON ClassMember where
   toJSON (ClassField modifiers type_ name) = classField modifiers type_ name
-  toJSON (ClassMethod modifiers type_ name parameters throws body) = classMethod modifiers type_ name parameters throws body
+  toJSON (ClassMethod modifiers type_ name parameters throws _ body) = classMethod modifiers type_ name parameters throws body
 
 instance ToJSON New where
   toJSON (Simple t) = toJSON t
