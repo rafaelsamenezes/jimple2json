@@ -98,14 +98,28 @@ jimpleDeclaration = do
   reservedOp ";"
   return $ Declaration type_ variables
 
-jimpleStatementIdentity :: Parser Statement
-jimpleStatementIdentity = do
+jimpleStatementTypedIdentity :: Parser Statement
+jimpleStatementTypedIdentity = do
   localName <- jimpleLocalName
   reservedOp ":="
   name <- atIdentifier
   type_ <- jimpleType
   reservedOp ";"
   return $ Identity localName name type_
+
+jimpleStatementNonTypedIdentity :: Parser Statement
+jimpleStatementNonTypedIdentity = do
+  localName <- jimpleLocalName
+  reservedOp ":="
+  name <- atIdentifier
+  reservedOp ";"
+  return $ Identity localName name Void
+
+
+jimpleStatementIdentity :: Parser Statement
+jimpleStatementIdentity =
+  try jimpleStatementTypedIdentity
+  <|> try jimpleStatementNonTypedIdentity
 
 jimpleStatementThrow :: Parser Statement
 jimpleStatementThrow = do
@@ -170,6 +184,51 @@ jimpleStatementAssignment = do
   reservedOp ";"
   return $ Assignement var expression
 
+jimpleStatementCatch :: Parser Statement
+jimpleStatementCatch = do
+  reserved "catch"
+  className <- jimpleClassName
+  reserved "from"
+  from <- identifier
+  reserved "to"
+  to <- identifier
+  reserved "with"
+  with <- identifier
+  reservedOp ";"
+  return $ Catch className from to with
+
+jimpleCaseStatementDefault :: Parser CaseStatement
+jimpleCaseStatementDefault = do
+  reserved "default:"
+  reserved "goto"
+  label <- identifier
+  reservedOp ";"
+  return $ Default label
+
+jimpleCaseStatementCorner :: Parser CaseStatement
+jimpleCaseStatementCorner = do
+  reserved "case"
+  value <- jimpleImmediate
+  reservedOp ":"
+  reserved "goto"
+  label <- identifier
+  reservedOp ";"
+  return $ Case value label
+
+jimpleCaseStatement :: Parser CaseStatement
+jimpleCaseStatement =
+  try jimpleCaseStatementDefault
+  <|> try jimpleCaseStatementCorner
+
+jimpleStatementSwitch :: Parser Statement
+jimpleStatementSwitch = do
+  reserved "lookupswitch"
+  condition <- Tok.parens lexer $ jimpleImmediate
+  jumps <- Tok.braces lexer $ many jimpleCaseStatement
+  reservedOp ";"
+  return $ LookupSwitch condition jumps
+
+
 --class HelloWorld extends java.lang.Object {void <init>() { if $z0 != 0 goto label1; }  }
 jimpleStatement :: Parser Statement
 jimpleStatement =
@@ -182,6 +241,8 @@ jimpleStatement =
     <|> try jimpleStatementGoto
     <|> try jimpleStatementLabel
     <|> try jimpleStatementLocation
+    <|> try jimpleStatementCatch
+    <|> try jimpleStatementSwitch
     -- <|> try jimpleStatementAssignmentDeref
 
 jimpleMethodFullBodyStmt :: Parser MethodBodyField

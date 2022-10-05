@@ -51,6 +51,7 @@ instance ToJSON BinOp where
   toJSON Minus = toJSON $ T.pack "-"
   toJSON Times = toJSON $ T.pack "*"
   toJSON Greater = toJSON $ T.pack ">"
+  toJSON Less = toJSON $ T.pack "<"
   toJSON Division = toJSON $ T.pack "/"
   toJSON CmpGEq = toJSON $ T.pack ">="
   toJSON CmpLEq = toJSON $ T.pack "<="
@@ -58,6 +59,10 @@ instance ToJSON BinOp where
   toJSON CmpL = toJSON $ T.pack "cmpl"
   toJSON Cmp = toJSON $ T.pack "cmp"
   toJSON x = toJSON $ show x
+
+instance ToJSON CaseStatement where
+  toJSON (Default n) = object [ ("case", "default"), "goto" .= n ]
+  toJSON (Case i n) = object [ "case".= i, "goto" .= n ]
 
 instance ToJSON Statement where
   toJSON (Label x) = object [("object", "Label"), "label_id" .= x, "content" .= ([] :: [Statement])]
@@ -71,6 +76,8 @@ instance ToJSON Statement where
   toJSON (IfGoto e l) = object [("object", "If"), "expression" .= e, "goto" .= l]
   toJSON (Invoke x) = toJSON x
   toJSON (Location l) = object [("object", "Location"), "line" .= l]
+  toJSON (Catch c f t w) = object [("object", "Catch"), "class" .= c]
+  toJSON (LookupSwitch cond checks) = object [("object", "Switch"), "cond" .= cond]
 
 instance ToJSON MethodBodyField where
   toJSON (Statement x) = toJSON x

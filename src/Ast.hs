@@ -59,6 +59,7 @@ data BinOp = And
            | Mod
            | Cmp
            | Greater
+           | Less
            | CmpG
            | CmpGEq
            | CmpL
@@ -73,11 +74,13 @@ data BinOp = And
 
 data UnOp = LengthOf
           | Neg
-           deriving (Eq, Ord, Show)
+          deriving (Eq, Ord, Show)
 
 type BoolExpression = String
 
-
+data CaseStatement = Default Name
+                   | Case Immediate Name
+                   deriving (Eq, Ord, Show)
 
 data Statement = Label Name
                | Breakpoint
@@ -90,6 +93,8 @@ data Statement = Label Name
                | Throw Immediate
                | Goto Label
                | Location Name
+               | Catch ClassName Name Name Name
+               | LookupSwitch Immediate [CaseStatement]
                deriving (Eq, Ord, Show)
 
 convertIdentity :: Statement -> Statement
