@@ -3,8 +3,6 @@
 This is a Haskell application that parses multiple jimple files and converts
 them into JSON
 
-Ths is still a WIP in the Early Stages
-
 ## Building
 
 Use [Haskell Stack](https://docs.haskellstack.org/en/stable/README/) tool for
