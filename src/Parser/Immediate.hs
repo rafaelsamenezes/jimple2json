@@ -24,9 +24,12 @@ jimpleImmediateString = do
   char '"'
   return $ StringConst value
 
+t = Local <$> Tok.angles lexer identifier
+y = Local <$> identifier
+
 jimpleImmediateLocal :: Parser Immediate
-jimpleImmediateLocal = do
-  Local <$> identifier
+jimpleImmediateLocal = try y <|> try t
+  
 
 jimpleImmediateClzz :: Parser Immediate
 jimpleImmediateClzz = do

@@ -23,7 +23,7 @@ import Data.List (intercalate, intersperse)
 lexer :: Tok.TokenParser ()
 lexer = Tok.makeTokenParser style
   where
-    ops = ["+", "-", "*", "<=", "==", ">=", ">", "<", "=", ";", ":", "'", ":=", ".", "[", "]", "/*", "*/"]
+    ops = ["+", "-", "*", "<=", "==", ">=", ">", "<", "=", ";", ":", "'", ":=", ".", "[", "]"]
     names =
       [ "abstract",
         "final",
@@ -111,6 +111,7 @@ simpleIdChar =
     <|> try (char '_' >> return '_')
     <|> try (char '$' >> return '$')
     <|> try (char '-' >> return '-')
+    <|> try (char '?' >> return '?')
 
 firstIdChar =
   try letter

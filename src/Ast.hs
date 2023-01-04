@@ -164,6 +164,7 @@ data MethodBody = EmptyMethod
 
 data ClassMember = ClassField [Modifier] Type Name
                  | ClassMethod [Modifier] Type Name ParameterList ThrowsClause [String]  MethodBody
+                 | ClassComment String
                  deriving (Eq, Ord, Show)
 
 type FileBody = [ClassMember]
@@ -182,7 +183,7 @@ data Modifier = Abstract
               | Annotation
               deriving (Eq, Ord, Show)
 
-
+-- Jimple File
 data FileType = Class
               | Interface
               deriving (Eq, Ord, Show)

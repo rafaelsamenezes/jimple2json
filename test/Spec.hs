@@ -104,9 +104,15 @@ unitTests =
       correctTest "Assignment to Deref 2" P.jimpleStatementAssignment "$i4 = r0[$i3];",
       correctTest "Assignment to Expression" P.jimpleStatementAssignment "z1 = 20 - i6;",
       correctTest "Assignment to Expression 2" P.jimpleStatement " $i2 = 20 - i4;",
-      correctTest "Assignment to Deref" P.jimpleStatementAssignment " $i2 = r0[i4];"
+      correctTest "Assignment to Deref" P.jimpleStatementAssignment " $i2 = r0[i4];",
+      correctTest "/* Hello World */" P.jimpleComment "/* Hello World */",
+      correctTest "/* Hello World 2*/" P.jimpleFile "class Rectangle { /* Hello World */ }",
+      correctTest "Variadic declaration" P.jimpleDeclaration  "double <set-?>;",      
+      correctTest "Variadic assignment" P.jimpleStatementAssignment "a = <set-?>;"
       -- TODO: incorrectTest "Declaration test 3" P.jimpleDeclaration  "return;"
     ]
+
+rectangleTest = "public final class Rectangle extends java.lang.Object{/* */ /* */ /* */ private double height;}"
 
 compareFiles :: FilePath -> FilePath -> IO ()
 compareFiles a b = do
@@ -114,8 +120,8 @@ compareFiles a b = do
   bContents <- B.readFile b
   let processed = (U.process aContents)
   case processed of
-    Nothing -> assertFailure "Couldn't parse Jimple File"
-    Just x -> x @?= (bContents)
+    Left err -> assertFailure "Couldn't parse Jimple File"
+    Right x -> x @?= (bContents)
 
 acceptanceTestCase name fileA fileB = testCase name $ compareFiles fileA fileB
 

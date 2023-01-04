@@ -39,10 +39,14 @@ import qualified Text.Parsec.Expr as Ex
 import Text.Parsec.String (Parser)
 import qualified Text.Parsec.Token as Tok
 import qualified Text.ParserCombinators.Parsec.Combinator as Tok
+import qualified Control.Exception as Tok
+
+abc =  Tok.angles lexer identifier
 
 jimpleLocalName :: Parser LocalName
-jimpleLocalName = do
-  identifier
+jimpleLocalName = 
+  try identifier
+  <|> try abc
 
 jimpleJustExtendClause :: Parser ExtendsClause
 jimpleJustExtendClause = do
@@ -278,10 +282,13 @@ jimpleClassMemberMethod = do
   throws <- jimpleThrowsClause
   ClassMethod modifier type_ name parameters throws comment <$> jimpleMethodBody
 
+test = ClassComment  <$> jimpleComment
+
 jimpleClassMember :: Parser ClassMember
-jimpleClassMember =
-  try jimpleClassMemberField
+jimpleClassMember =  
+    try jimpleClassMemberField
     <|> try jimpleClassMemberMethod
+    <|> ClassComment  <$> jimpleComment
 
 jimpleFileBody :: Parser FileBody
 jimpleFileBody = do
