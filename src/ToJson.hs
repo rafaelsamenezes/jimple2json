@@ -7,6 +7,27 @@ import Data.Aeson
 import Data.Aeson.Types
 import qualified Data.Text as T
 
+convertIdentity :: Statement -> Statement
+convertIdentity (Identity var at t) = Assignement (LocalName var) (Cast t $ Local ('@':at))
+convertIdentity x = x
+
+convertDeclaration :: MethodBodyField -> [MethodBodyField]
+convertDeclaration (Declaration t []) = []
+convertDeclaration (Declaration t (x:xs)) = DeclarationSingle t x : convertDeclaration (Declaration t xs)
+convertDeclaration x = [x]
+
+adaptMethodFields :: [MethodBodyField] -> [MethodBodyField]
+adaptMethodFields = concatMap convertDeclaration
+
+extractClassName :: MethodSignature -> ClassName
+extractClassName (MethodSignature a _ _ _) = a
+
+extractMethod :: MethodSignature -> Name
+extractMethod (MethodSignature _ _ a _) = a
+
+extractMethodParameters :: MethodSignature -> ParameterList
+extractMethodParameters (MethodSignature _ _ _ a) = a
+
 instance ToJSON Immediate where
   toJSON (Local x) = object ["expr_type" .= T.pack "symbol", "value" .= T.pack x]
   toJSON (Value x) = object ["expr_type" .= T.pack "constant", "value" .= T.pack x]

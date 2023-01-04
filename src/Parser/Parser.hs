@@ -43,7 +43,7 @@ import qualified Control.Exception as Tok
 
 abc =  Tok.angles lexer identifier
 
-jimpleLocalName :: Parser LocalName
+jimpleLocalName :: Parser Name
 jimpleLocalName = 
   try identifier
   <|> try abc
