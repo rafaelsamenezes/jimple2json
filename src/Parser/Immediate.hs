@@ -9,6 +9,7 @@ import qualified Text.Parsec.Token as Tok
 jimpleImmediateValue :: Parser Immediate
 jimpleImmediateValue = do
   value <- many1 digit
+  _ <- many $ char 'L'
   return $ Value value
 
 jimpleImmediateNegativeValue :: Parser Immediate

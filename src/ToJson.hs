@@ -155,7 +155,7 @@ classField modifiers type_ name =
 instance ToJSON ClassMember where
   toJSON (ClassField modifiers type_ name) = classField modifiers type_ name
   toJSON (ClassMethod modifiers type_ name parameters throws _ body) = classMethod modifiers type_ name parameters throws body
-  toJSON (ClassComment comment) = object []
+  toJSON (ClassComment comment) = object [ "object" .= T.pack "Comment" ]
 
 instance ToJSON New where
   toJSON (Simple t) = toJSON t
