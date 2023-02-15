@@ -60,6 +60,7 @@ instance ToJSON Expression where
   toJSON (Cast t i) = object [("expr_type", "cast"), "from" .= i, "to" .= t]
   toJSON (ReferenceExpr ref) = toJSON ref
   toJSON (InvokeExpr e) = customJSON e
+  toJSON (InstanceOf i t) = object [("expr_type", "instanceof"), "value" .= i, "type" .= t ]
   toJSON (UnOp i LengthOf) = object [("expr_type", "lengthof"), "expression" .= i ]
   toJSON (UnOp i Neg) = object [("expr_type", "neg"), "expression" .= i ]
   toJSON (BinOp lhs rhs op) = object [("expr_type", "binop"), "lhs" .= lhs, "rhs" .= rhs, "operator" .= op]

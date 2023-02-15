@@ -54,7 +54,6 @@ jimpleBinOp = try (reservedOp "==" >> return CmpEq)
   <|> try (reservedOp "<=" >> return CmpLEq)
   <|> try (reservedOp ">" >> return Greater)
   <|> try (reservedOp "<" >> return Less)
-  <|> try (reservedOp "instanceof" >> return InstanceOf)
   <|> try (reservedOp "cmpg" >> return CmpG)
   <|> try (reservedOp "cmpl" >> return CmpL)
   <|> try (reservedOp "cmp" >> return Cmp)
@@ -98,6 +97,15 @@ jimpleNew = do
   reserved "new"
   Simple <$> jimpleType
 
+jimpleInstanceOf :: Parser Expression
+jimpleInstanceOf = do
+  lhs <- jimpleImmediate
+  Tok.whiteSpace lexer
+  reserved "instanceof"
+  Tok.whiteSpace lexer
+  rhs <- jimpleType
+  return $ InstanceOf lhs rhs
+
 jimpleLengthExpression :: Parser Expression
 jimpleLengthExpression = do
   reserved "lengthof"
@@ -110,6 +118,7 @@ jimpleExpression :: Parser Expression
 jimpleExpression =
   try jimpleReferenceExpr
     <|> try jimpleNewArrayExpression
+    <|> try jimpleInstanceOf
     <|> try jimpleCast
     <|> try (New <$> jimpleNew)
     <|> try (InvokeExpr <$> jimpleInvokeExpr)

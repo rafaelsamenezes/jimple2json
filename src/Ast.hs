@@ -67,6 +67,7 @@ data Expression
   | BinOp Immediate Immediate BinOp -- 1 + 1
   | UnOp Immediate UnOp -- -1
   | Immediate Immediate -- a
+  | InstanceOf Immediate Type -- "a" instanceof A
   deriving (Eq, Show)
 
 data Immediate
@@ -101,7 +102,6 @@ data BinOp
   | Add
   | Times
   | Division
-  | InstanceOf
   deriving (Eq, Show)
 
 data UnOp
