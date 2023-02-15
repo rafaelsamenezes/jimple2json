@@ -101,6 +101,7 @@ data BinOp
   | Add
   | Times
   | Division
+  | InstanceOf
   deriving (Eq, Show)
 
 data UnOp
